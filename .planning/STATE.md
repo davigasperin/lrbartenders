@@ -5,21 +5,21 @@
 See: .planning/PROJECT.md (updated 2026-08-04)
 
 **Core value:** Converter visitantes em pedidos de orçamento, transmitindo sofisticação e premium.
-**Current focus:** Phase 1 — Fundação + Hero 3D
+**Current focus:** Entrega final — revisão do cliente (4 JPEGs + textos)
 
 ## Current Position
 
-Phase: 3 of 4 (Páginas internas)
+Phase: 4 of 4 (Formulários + Entrega)
 Plan: 2 of 2 in current phase
-Status: Phase complete — aguardando revisão do usuário antes da Fase 4
-Last activity: 2026-08-04 — Fase 3 entregue (build limpo, 4 rotas 200) e commitada
+Status: ALL PHASES COMPLETE — entregue para revisão final do cliente
+Last activity: 2026-08-04 — Fase 4 entregue (build limpo, 7 rotas + sitemap/robots 200) e commitada
 
-Progress: [███░░░░░░░] 37%
+Progress: [████████░░] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
+- Total plans completed: 9
 - Average duration: —
 - Total execution time: —
 
@@ -27,11 +27,14 @@ Progress: [███░░░░░░░] 37%
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| — | — | — | — |
+| 1. Fundação + Hero 3D | 2 | 2 | — |
+| 2. Seções da Home | 3 | 3 | — |
+| 3. Páginas internas | 2 | 2 | — |
+| 4. Formulários + Entrega | 2 | 2 | — |
 
 **Recent Trend:**
-- Last 5 plans: —
-- Trend: —
+- Last 5 plans: 4 fases concluídas em sequência no mesmo dia
+- Trend: Fases concluídas uma por uma com revisão do usuário entre elas
 
 ## Accumulated Context
 
@@ -60,5 +63,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-08-04
-Stopped at: Fase 3 concluída — aguardando revisão do usuário (páginas /sobre /servicos /cardapio /galeria)
+Stopped at: ENTREGA FINAL — todas as 4 fases concluídas. Pendências pós-revisão: trocar `<Logo />` placeholder pelo JPEG real, incorporar os 4 JPEGs de cardápio, ajustar textos/drinks placeholders
 Resume file: None
