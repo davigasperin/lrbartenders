@@ -143,6 +143,146 @@ export const GALLERY = [
   '/images/galeria-09.jpg',
 ];
 
+export const ABOUT_PAGE = {
+  history: {
+    eyebrow: 'Nossa história',
+    title: 'Uma jornada de sabor desde 2012',
+    paragraphs: [
+      'A LR Bartenders nasceu em 2012 com uma missão clara: elevar a coquetelaria a um novo patamar nas festas e eventos de Campinas e região. O que começou como um serviço diferenciado de bartenders tornou-se referência de sofisticação, versatilidade e atendimento impecável.',
+      'Hoje somos um serviço sofisticado e versátil, associado a uma Coquetelaria Premium apresentada de forma clássica ou interativa. Nossos bartenders são altamente qualificados e corteses, sempre prontos para interagir com o público e eternizar momentos inesquecíveis.',
+    ],
+    image: '/images/topo-site-01.jpg',
+    stats: [
+      { value: '2012', label: 'Ano de fundação' },
+      { value: '+500', label: 'Eventos realizados' },
+      { value: '100%', label: 'Satisfação' },
+    ],
+  },
+  pillars: [
+    {
+      id: 'missao',
+      title: 'Missão',
+      text: 'Oferecer uma coquetelaria requintada e criativa, com sabor único, marcas conceituadas, insumos de alta qualidade e uma linha artesanal que encanta e surpreende.',
+    },
+    {
+      id: 'diferencial',
+      title: 'Diferencial',
+      text: 'Bebidas personalizadas, atendimento clássico ou descontraído, e a interação dos bartenders com o público — transformando cada evento em uma experiência sensorial.',
+    },
+    {
+      id: 'sucesso',
+      title: 'Sucesso',
+      text: 'Acreditamos em confiança e ética como base de tudo. Nosso reconhecimento vem de um cardápio renovado para cada época do ano e da fidelidade dos nossos clientes.',
+    },
+  ],
+};
+
+export type EventType = {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+};
+
+export const EVENT_TYPES: EventType[] = [
+  {
+    id: 'casamentos',
+    title: 'Casamentos',
+    description:
+      'Coquetelaria premium para o grande dia — do clássico ao interativo, eternizando cada momento com sofisticação.',
+    image: '/images/topo-site-02.jpg',
+  },
+  {
+    id: '15-anos',
+    title: '15 Anos',
+    description:
+      'Uma festa inesquecível para celebrar a debutante, com bar de drinks, cascata de chocolate e muitas surpresas.',
+    image: '/images/topo-site-03.jpg',
+  },
+  {
+    id: 'corporativos',
+    title: 'Corporativos',
+    description:
+      'Eventos, happy hours e confraternizações empresariais com atendimento impecável e marcas conceituadas.',
+    image: '/images/topo-site-04.jpg',
+  },
+  {
+    id: 'formaturas',
+    title: 'Formaturas',
+    description:
+      'A celebração de uma conquista merece um serviço à altura: drinks clássicos, premium e sem álcool para todos.',
+    image: '/images/galeria-08.jpg',
+  },
+  {
+    id: 'aniversarios',
+    title: 'Aniversários',
+    description:
+      'Aniversários memoráveis com a LR Bartenders: coquetelaria personalizada que anima e encanta todos os convidados.',
+    image: '/images/galeria-05.jpg',
+  },
+  {
+    id: 'e-mais',
+    title: 'E mais',
+    description:
+      'Festas privadas, lançamentos, convenções e eventos exclusivos. Se a ocasião merece o melhor, a LR está lá.',
+    image: '/images/servico-premium.jpg',
+  },
+];
+
+export const MENU_ALCOHOL: Record<string, boolean> = {
+  'festival-caipirinhas': true,
+  'old-ideale': true,
+  'classicos-atuais': true,
+  'bar-gin': true,
+  'fresh-sem-alcool': false,
+  'premium-sem-alcool': false,
+};
+
+export const MENU_ITEMS: Record<string, string[]> = {
+  'festival-caipirinhas': [
+    'Caipirinha de Limão Tradicional',
+    'Caipiroska de Frutas Vermelhas',
+    'Caipirinha Gourmet de Morango',
+    'Caipiríssima de Maracujá',
+    'Caipiroska de Abacaxi com Hortelã',
+  ],
+  'old-ideale': [
+    'Old Fashioned',
+    'Manhattan',
+    'Vieux Carré',
+    'Sazerac',
+    'Negroni Clássico',
+  ],
+  'classicos-atuais': [
+    'Mojito Clássico',
+    'Margarita Tradicional',
+    'Moscow Mule',
+    'Piña Colada',
+    'Cosmopolitan',
+  ],
+  'bar-gin': [
+    'Gin Tônica Clássica',
+    'Gin Tônica de Frutas Vermelhas',
+    'Gin Tônica Floral',
+    'Gimlet de Pepino',
+    'Gin Tônica Premium',
+  ],
+  'fresh-sem-alcool': [
+    'Água Aromatizada de Pepino e Menta',
+    'Virgin Mojito',
+    'Citrus Cooler',
+    'Fresh de Frutas Vermelhas',
+    'Sparkling Tropical Zero',
+  ],
+  'premium-sem-alcool': [
+    'Zero Aperol Spritz',
+    'Sunset Zero',
+    'Blue Lagoon Zero',
+    'Tropical Elixir',
+    'Pink Fizz Sem Álcool',
+  ],
+};
+
 export const CTA = {
   title: 'Premium Open Bar para Festas e Eventos',
   subtitle:
