@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-08-04)
 
 ## Current Position
 
-Phase: 1 of 4 (Fundação + Hero 3D)
-Plan: 2 of 2 in current phase
-Status: Phase complete — aguardando revisão do usuário antes da Fase 2
-Last activity: 2026-08-04 — Fase 1 entregue (build limpo, 200 OK) e commitada
+Phase: 2 of 4 (Seções da Home)
+Plan: 3 of 3 in current phase
+Status: Phase complete — aguardando revisão do usuário antes da Fase 3
+Last activity: 2026-08-04 — Fase 2 entregue (build limpo, 200 OK) e commitada
 
-Progress: [█░░░░░░░░░] 12%
+Progress: [██░░░░░░░░] 25%
 
 ## Performance Metrics
 
@@ -60,5 +60,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-08-04
-Stopped at: Fase 1 concluída — aguardando revisão do usuário (header + hero 3D no browser)
+Stopped at: Fase 2 concluída — aguardando revisão do usuário (Home completa no browser)
 Resume file: None

@@ -83,7 +83,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Fundação + Hero 3D | 0/2 | Not started | - |
-| 2. Seções da Home | 0/3 | Not started | - |
+| 1. Fundação + Hero 3D | 2/2 | Complete | 2026-08-04 |
+| 2. Seções da Home | 3/3 | Complete | 2026-08-04 |
 | 3. Páginas internas | 0/2 | Not started | - |
 | 4. Formulários + Entrega | 0/2 | Not started | - |
