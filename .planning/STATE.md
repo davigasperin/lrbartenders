@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-08-04)
 
 ## Current Position
 
-Phase: 2 of 4 (Seções da Home)
-Plan: 3 of 3 in current phase
-Status: Phase complete — aguardando revisão do usuário antes da Fase 3
-Last activity: 2026-08-04 — Fase 2 entregue (build limpo, 200 OK) e commitada
+Phase: 3 of 4 (Páginas internas)
+Plan: 2 of 2 in current phase
+Status: Phase complete — aguardando revisão do usuário antes da Fase 4
+Last activity: 2026-08-04 — Fase 3 entregue (build limpo, 4 rotas 200) e commitada
 
-Progress: [██░░░░░░░░] 25%
+Progress: [███░░░░░░░] 37%
 
 ## Performance Metrics
 
@@ -60,5 +60,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-08-04
-Stopped at: Fase 2 concluída — aguardando revisão do usuário (Home completa no browser)
+Stopped at: Fase 3 concluída — aguardando revisão do usuário (páginas /sobre /servicos /cardapio /galeria)
 Resume file: None
