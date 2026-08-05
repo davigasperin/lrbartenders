@@ -113,16 +113,17 @@ export function Hero() {
       <Content>
         <Eyebrow data-hero-anim>{SITE.tagline}</Eyebrow>
         <HeroTitle data-hero-logo>
-          <Image
-            src="/images/logo.png"
-            alt="LR Bartenders"
-            width={370}
-            height={392}
-            priority
-            style={{ width: 'auto', height: 'clamp(96px, 20vh, 190px)' }}
-          />
+          <Medallion>
+            <Image
+              src="/images/logo.png"
+              alt="LR Bartenders"
+              width={370}
+              height={392}
+              priority
+              style={{ width: 'auto', height: 'clamp(130px, 28vh, 280px)' }}
+            />
+          </Medallion>
         </HeroTitle>
-        <Subtitle data-hero-anim>{SITE.slogan}</Subtitle>
         <Description data-hero-anim>
           Coquetelaria premium, cascata de chocolate, açaí, gin e muito mais
           para tornar o seu evento inesquecível.
@@ -265,15 +266,33 @@ const HeroTitle = styled.h1`
   line-height: 1;
   display: flex;
   justify-content: center;
-  filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.45));
 `;
 
-const Subtitle = styled.p`
-  margin-top: 16px;
-  font-family: ${({ theme }) => theme.fonts.serif};
-  font-style: italic;
-  font-size: clamp(1.1rem, 2.4vw, 1.6rem);
-  color: ${({ theme }) => theme.colors.dourado};
+const Medallion = styled.figure`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(14px, 2.5vw, 24px);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    ${({ theme }) => theme.colors.verdePetroleoClaro} 0%,
+    ${({ theme }) => theme.colors.verdePetroleoEscuro} 55%,
+    ${({ theme }) => theme.colors.vinhoEscuro} 100%
+  );
+  border: 2px solid rgba(201, 162, 39, 0.6);
+  box-shadow: 0 0 45px rgba(201, 162, 39, 0.22),
+    0 24px 60px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    border: 1px solid rgba(201, 162, 39, 0.35);
+    pointer-events: none;
+  }
 `;
 
 const Description = styled.p`
