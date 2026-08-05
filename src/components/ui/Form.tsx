@@ -1,16 +1,19 @@
 'use client';
 
-import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
-import styled from 'styled-components';
+import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react';
+import styled, { css } from 'styled-components';
 
 export function Field({ label, required, error, children }: { label: string; required?: boolean; error?: string; children: ReactNode }) {
+  const id = useId();
+  const errorId = error ? `${id}-error` : undefined;
+
   return (
     <FieldWrap>
-      <Label>
+      <Label htmlFor={id}>
         {label} {required && <span aria-hidden="true">*</span>}
       </Label>
+      {error && <ErrorText id={errorId} role="alert">{error}</ErrorText>}
       {children}
-      {error && <ErrorText>{error}</ErrorText>}
     </FieldWrap>
   );
 }
@@ -19,46 +22,46 @@ type InputProps = InputHTMLAttributes<HTMLInputElement> & { $invalid?: boolean }
 type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & { $invalid?: boolean };
 type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & { $invalid?: boolean };
 
-const control = `
+const control = css`
   width: 100%;
   padding: 14px 16px;
   border: 1px solid rgba(201, 162, 39, 0.22);
   border-radius: 12px;
-  background: rgba(10, 26, 29, 0.55);
-  color: #f7f3ea;
+  background: ${({ theme }) => theme.colors.inputBg};
+  color: ${({ theme }) => theme.colors.texto};
   font: 400 0.97rem var(--font-sans), system-ui, sans-serif;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
   &::placeholder {
-    color: rgba(246, 242, 231, 0.35);
+    color: ${({ theme }) => theme.colors.textoMuted};
   }
 
   &:focus {
     outline: none;
-    border-color: #c9a227;
+    border-color: ${({ theme }) => theme.colors.dourado};
     box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.14);
   }
 `;
 
 export const Input = styled.input<InputProps>`
   ${control}
-  border-color: ${({ $invalid }) => ($invalid ? '#d9534f' : 'rgba(201, 162, 39, 0.22)')};
+  border-color: ${({ $invalid, theme }) => ($invalid ? theme.colors.error : 'rgba(201, 162, 39, 0.22)')};
 `;
 
 export const Select = styled.select<SelectProps>`
   ${control}
   appearance: none;
   cursor: pointer;
-  background-image: linear-gradient(45deg, transparent 50%, #c9a227 50%),
-    linear-gradient(135deg, #c9a227 50%, transparent 50%);
+  background-image: linear-gradient(45deg, transparent 50%, ${({ theme }) => theme.colors.dourado} 50%),
+    linear-gradient(135deg, ${({ theme }) => theme.colors.dourado} 50%, transparent 50%);
   background-position: calc(100% - 20px) 50%, calc(100% - 15px) 50%;
   background-size: 5px 5px;
   background-repeat: no-repeat;
-  border-color: ${({ $invalid }) => ($invalid ? '#d9534f' : 'rgba(201, 162, 39, 0.22)')};
+  border-color: ${({ $invalid, theme }) => ($invalid ? theme.colors.error : 'rgba(201, 162, 39, 0.22)')};
 
   option {
-    background: #072529;
-    color: #f7f3ea;
+    background: ${({ theme }) => theme.colors.verdePetroleoEscuro};
+    color: ${({ theme }) => theme.colors.texto};
   }
 `;
 
@@ -66,7 +69,7 @@ export const Textarea = styled.textarea<TextareaProps>`
   ${control}
   resize: vertical;
   min-height: 130px;
-  border-color: ${({ $invalid }) => ($invalid ? '#d9534f' : 'rgba(201, 162, 39, 0.22)')};
+  border-color: ${({ $invalid, theme }) => ($invalid ? theme.colors.error : 'rgba(201, 162, 39, 0.22)')};
 `;
 
 const FieldWrap = styled.div`
@@ -83,11 +86,11 @@ const Label = styled.label`
   color: ${({ theme }) => theme.colors.douradoClaro};
 
   span {
-    color: #d9534f;
+    color: ${({ theme }) => theme.colors.error};
   }
 `;
 
 const ErrorText = styled.span`
   font-size: 0.8rem;
-  color: #e26d6a;
+  color: ${({ theme }) => theme.colors.errorLight};
 `;

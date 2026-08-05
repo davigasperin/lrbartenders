@@ -48,7 +48,7 @@ export function MenuShowcase() {
         stagger: 0.1,
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 70%',
+          start: 'top 75%',
         },
       });
     }, sectionRef);
@@ -112,12 +112,10 @@ const Section = styled.section`
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
-  height: 100vh;
-  min-height: 640px;
+  height: max(100svh, 640px);
 
   @media (max-width: 1024px) {
     height: auto;
-    min-height: 0;
     padding: 80px 0;
   }
 `;
@@ -127,7 +125,7 @@ const Intro = styled.div`
 `;
 
 const TrackWrap = styled.div<{ $mobile: boolean }>`
-  margin-top: 32px;
+  margin-top: ${({ theme }) => theme.spacing[24]};
 
   ${({ $mobile }) =>
     $mobile
@@ -143,20 +141,20 @@ const TrackWrap = styled.div<{ $mobile: boolean }>`
 
 const Track = styled.div`
   display: flex;
-  gap: 48px;
+  gap: ${({ theme }) => theme.spacing[32]};
   width: max-content;
   padding: 0 24px;
   will-change: transform;
 
   @media (max-width: 1024px) {
-    gap: 24px;
+    gap: ${({ theme }) => theme.spacing[24]};
     padding: 0;
   }
 `;
 
 const Panel = styled.article`
   position: relative;
-  width: min(560px, 86vw);
+  width: min(520px, 86vw);
   flex-shrink: 0;
   scroll-snap-align: center;
 
@@ -275,13 +273,13 @@ const DecoCorner = styled.span`
 
 const PanelImage = styled.div`
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 10;
   border-radius: ${({ theme }) => theme.radius.medium};
   overflow: hidden;
 `;
 
 const PanelNumber = styled.div`
-  margin-top: 22px;
+  margin-top: ${({ theme }) => theme.spacing[16]};
   font-family: ${({ theme }) => theme.fonts.serif};
   font-size: 0.95rem;
   letter-spacing: 0.2em;

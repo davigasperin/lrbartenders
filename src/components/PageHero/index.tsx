@@ -42,7 +42,7 @@ const Overlay = styled.div`
     180deg,
     rgba(7, 14, 16, 0.55) 0%,
     rgba(7, 14, 16, 0.72) 55%,
-    var(--bg) 100%
+    ${({ theme }) => theme.colors.fundo} 100%
   );
 `;
 
@@ -50,7 +50,7 @@ const Inner = styled.div`
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: var(--container);
+  max-width: 1200px;
   margin: 0 auto;
 `;
 
@@ -61,28 +61,29 @@ const Eyebrow = styled.span`
   font: 600 0.78rem var(--font-sans);
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: ${({ theme }) => theme.colors.douradoClaro};
 
   &::before {
     content: '';
     width: 2.5rem;
     height: 1px;
-    background: var(--gold);
+    background: ${({ theme }) => theme.colors.dourado};
   }
 `;
 
 const Title = styled.h1`
   margin: 1rem 0 0;
-  font: 700 clamp(2.4rem, 6vw, 4.2rem) var(--font-serif);
-  line-height: 1.04;
-  color: var(--white);
+  font: 700 ${({ theme }) => theme.type.displayLg} var(--font-serif);
+  line-height: ${({ theme }) => theme.lineHeights.display};
+  color: ${({ theme }) => theme.colors.texto};
 `;
 
 const Subtitle = styled.p`
   max-width: 52ch;
   margin: 1.1rem 0 0;
-  font: 400 1.08rem/1.7 var(--font-sans);
-  color: rgba(246, 242, 231, 0.82);
+  font: 400 ${({ theme }) => theme.type.body} / ${({ theme }) => theme.lineHeights.body}
+    var(--font-sans);
+  color: ${({ theme }) => theme.colors.textoMuted};
 `;
 
 const Crumb = styled.div`
@@ -93,19 +94,26 @@ const Crumb = styled.div`
   font: 400 0.82rem var(--font-sans);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(246, 242, 231, 0.55);
+  color: ${({ theme }) => theme.colors.textoMuted};
 
   a {
-    color: rgba(246, 242, 231, 0.55);
+    color: ${({ theme }) => theme.colors.textoMuted};
+    cursor: pointer;
     transition: color 0.25s ease;
 
     &:hover {
-      color: var(--gold);
+      color: ${({ theme }) => theme.colors.dourado};
+    }
+
+    &:focus-visible {
+      outline: 2px solid ${({ theme }) => theme.colors.dourado};
+      outline-offset: 4px;
+      border-radius: 2px;
     }
   }
 
   span {
-    color: var(--gold);
+    color: ${({ theme }) => theme.colors.douradoClaro};
   }
 `;
 

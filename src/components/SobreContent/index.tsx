@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 
+import Container from '@/components/ui/Container';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { gsap } from '@/lib/gsap';
 import { ABOUT_PAGE } from '@/lib/content';
@@ -42,7 +43,7 @@ export function SobreContent() {
           ease: 'power2.out',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 80%',
+            start: 'top 75%',
           },
         },
       );
@@ -55,7 +56,7 @@ export function SobreContent() {
 
   return (
     <Section ref={sectionRef} className="section">
-      <Container>
+      <SobreGrid>
         <Visual data-sobre-anim>
           <Frame>
             <Image
@@ -71,6 +72,7 @@ export function SobreContent() {
 
         <Content>
           <SectionTitle
+            align="left"
             eyebrow={history.eyebrow}
             title={
               <>
@@ -92,9 +94,9 @@ export function SobreContent() {
             ))}
           </Stats>
         </Content>
-      </Container>
+      </SobreGrid>
 
-      <Pillars className="section">
+      <Pillars>
         <PillarsInner>
           <SectionTitle
             eyebrow="O que nos move"
@@ -123,10 +125,7 @@ const Section = styled.section`
   background: ${({ theme }) => theme.colors.fundo};
 `;
 
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
+const SobreGrid = styled(Container)`
   display: grid;
   grid-template-columns: 1.05fr 1fr;
   gap: 64px;
@@ -178,6 +177,10 @@ const Stats = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin: 28px 0;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Stat = styled.div`
@@ -201,6 +204,8 @@ const StatLabel = styled.div`
 `;
 
 const Pillars = styled.div`
+  margin-top: ${({ theme }) => theme.spacing[96]};
+  padding: ${({ theme }) => theme.spacing[48]} 0;
   background: linear-gradient(180deg, transparent, rgba(201, 162, 39, 0.04), transparent);
 `;
 
@@ -213,9 +218,13 @@ const PillarsInner = styled.div`
 const PillarsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: ${({ theme }) => theme.spacing[24]};
 
   @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 640px) {
     grid-template-columns: 1fr;
   }
 `;

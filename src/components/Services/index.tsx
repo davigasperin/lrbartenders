@@ -5,6 +5,7 @@ import type { MouseEvent } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 
+import Container from '@/components/ui/Container';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { gsap } from '@/lib/gsap';
 import { SERVICES } from '@/lib/content';
@@ -30,7 +31,7 @@ export function Services() {
         stagger: 0.12,
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 72%',
+          start: 'top 75%',
         },
       });
     }, sectionRef);
@@ -38,9 +39,16 @@ export function Services() {
     return () => ctx.revert();
   }, [reduced]);
 
+  const rectMap = useRef(new Map<HTMLElement, DOMRect>());
+
+  const handleEnter = (e: MouseEvent<HTMLElement>) => {
+    rectMap.current.set(e.currentTarget, e.currentTarget.getBoundingClientRect());
+  };
+
   const handleMove = (e: MouseEvent<HTMLElement>) => {
     const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
+    const rect = rectMap.current.get(card);
+    if (!rect) return;
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const rotateY = gsap.utils.mapRange(0, rect.width, 8, -8, x);
@@ -56,6 +64,7 @@ export function Services() {
   };
 
   const handleLeave = (e: MouseEvent<HTMLElement>) => {
+    rectMap.current.delete(e.currentTarget);
     gsap.to(e.currentTarget, {
       rotateX: 0,
       rotateY: 0,
@@ -83,6 +92,7 @@ export function Services() {
             <Card
               key={service.id}
               data-service-card
+              onMouseEnter={handleEnter}
               onMouseMove={handleMove}
               onMouseLeave={handleLeave}
             >
@@ -116,12 +126,6 @@ const Section = styled.section`
   overflow: hidden;
 `;
 
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-`;
-
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -132,7 +136,7 @@ const Grid = styled.div`
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.small}) {
     grid-template-columns: 1fr;
   }
 `;
@@ -145,9 +149,9 @@ const Card = styled.article`
   border: 1px solid rgba(201, 162, 39, 0.18);
   transition: border-color 0.4s ease, box-shadow 0.4s ease;
   transform-style: preserve-3d;
-  will-change: transform;
 
   &:hover {
+    will-change: transform;
     border-color: ${({ theme }) => theme.colors.dourado};
     box-shadow: ${({ theme }) => theme.shadows.gold};
   }

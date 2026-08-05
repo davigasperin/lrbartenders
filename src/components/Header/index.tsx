@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styled from 'styled-components';
 
+import { buttonBase, buttonSizes, buttonVariants } from '@/components/ui/Button';
 import { Logo } from '@/components/Logo';
 import { gsap, ScrollTrigger } from '@/lib/gsap';
 import { NAV_LINKS, SITE } from '@/lib/site';
@@ -13,6 +14,7 @@ export function Header() {
   const headerRef = useRef<HTMLElement | null>(null);
   const drawerRef = useRef<HTMLDivElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
+  const burgerRef = useRef<HTMLButtonElement | null>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -62,7 +64,7 @@ export function Header() {
     return () => ctx.revert();
   }, []);
 
-  const toggleMenu = (open?: boolean) => {
+  const toggleMenu = useCallback((open?: boolean) => {
     const tl = timelineRef.current;
     if (!tl) return;
 
@@ -70,17 +72,53 @@ export function Header() {
     setMenuOpen(shouldOpen);
 
     if (shouldOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.classList.add('no-scroll');
       tl.play();
     } else {
-      document.body.style.overflow = '';
+      document.body.classList.remove('no-scroll');
       tl.reverse();
+      burgerRef.current?.focus();
     }
-  };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        toggleMenu(false);
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const drawer = drawerRef.current;
+        if (!drawer) return;
+
+        const focusable = drawer.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [menuOpen, toggleMenu]);
 
   useEffect(() => {
     return () => {
-      document.body.style.overflow = '';
+      document.body.classList.remove('no-scroll');
     };
   }, []);
 
@@ -98,6 +136,7 @@ export function Header() {
                 key={link.href}
                 href={link.href}
                 $active={pathname === link.href}
+                aria-current={pathname === link.href ? 'page' : undefined}
               >
                 {link.label}
               </NavLink>
@@ -107,6 +146,7 @@ export function Header() {
           <Actions>
             <Cta href="/orcamento">Solicitar Orçamento</Cta>
             <Burger
+              ref={burgerRef}
               aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
               aria-expanded={menuOpen}
               $open={menuOpen}
@@ -125,7 +165,7 @@ export function Header() {
       <Drawer ref={drawerRef} role="dialog" aria-modal="true" aria-label="Menu">
         <DrawerTop>
           <Link href="/" onClick={() => toggleMenu(false)} aria-label="LR Bartenders">
-            <Logo size={34} showWordmark={false} />
+            <Logo size={34} />
           </Link>
           <CloseButton onClick={() => toggleMenu(false)} aria-label="Fechar menu">
             <span />
@@ -139,6 +179,7 @@ export function Header() {
               key={link.href}
               href={link.href}
               $active={pathname === link.href}
+              aria-current={pathname === link.href ? 'page' : undefined}
               onClick={() => toggleMenu(false)}
             >
               <Number>0{NAV_LINKS.findIndex((l) => l.href === link.href) + 1}</Number>
@@ -187,6 +228,13 @@ const Container = styled.div`
 const Brand = styled(Link)`
   display: inline-flex;
   align-items: center;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.dourado};
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
 `;
 
 const Nav = styled.nav`
@@ -204,6 +252,7 @@ const NavLink = styled(Link)<{ $active: boolean }>`
   font-size: 0.92rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  cursor: pointer;
   color: ${({ $active, theme }) =>
     $active ? theme.colors.douradoClaro : theme.colors.texto};
   transition: color ${({ theme }) => theme.transitions.base};
@@ -213,18 +262,26 @@ const NavLink = styled(Link)<{ $active: boolean }>`
     position: absolute;
     left: 0;
     bottom: -6px;
-    width: 0;
+    width: 100%;
     height: 1px;
     background: ${({ theme }) => theme.colors.dourado};
-    transition: width ${({ theme }) => theme.transitions.base};
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform ${({ theme }) => theme.transitions.base};
   }
 
   &:hover {
     color: ${({ theme }) => theme.colors.douradoClaro};
 
     &::after {
-      width: 100%;
+      transform: scaleX(1);
     }
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.dourado};
+    outline-offset: 4px;
+    border-radius: 2px;
   }
 `;
 
@@ -235,40 +292,11 @@ const Actions = styled.div`
 `;
 
 const Cta = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 11px 22px;
-  border-radius: ${({ theme }) => theme.radius.full};
-  font-size: 0.88rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: ${({ theme }) => theme.colors.verdePetroleoEscuro};
-  background: linear-gradient(
-    135deg,
-    ${({ theme }) => theme.colors.douradoClaro} 0%,
-    ${({ theme }) => theme.colors.dourado} 60%,
-    ${({ theme }) => theme.colors.douradoEscuro} 100%
-  );
-  animation: ctaGlow 2.4s ease-in-out infinite;
-  white-space: nowrap;
-  transition: transform ${({ theme }) => theme.transitions.base};
+  ${buttonBase}
+  ${buttonSizes.sm}
+  ${buttonVariants.primary}
 
-  &:hover {
-    transform: translateY(-2px);
-  }
-
-  @keyframes ctaGlow {
-    0%,
-    100% {
-      box-shadow: 0 0 12px rgba(201, 162, 39, 0.35);
-    }
-    50% {
-      box-shadow: 0 0 28px rgba(240, 215, 123, 0.65);
-    }
-  }
-
-  @media (max-width: 640px) {
+  @media (max-width: 1024px) {
     display: none;
   }
 `;
@@ -284,6 +312,12 @@ const Burger = styled.button<{ $open: boolean }>`
   align-items: center;
   justify-content: center;
   gap: 5px;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.dourado};
+    outline-offset: 2px;
+  }
 
   span {
     display: block;
@@ -314,6 +348,7 @@ const DrawerOverlay = styled.div`
   background: rgba(4, 10, 12, 0.72);
   backdrop-filter: blur(4px);
   visibility: hidden;
+  cursor: pointer;
 `;
 
 const Drawer = styled.div`
@@ -332,6 +367,7 @@ const Drawer = styled.div`
     ${({ theme }) => theme.colors.vinhoEscuro} 100%
   );
   box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+  transform: translateX(100%);
 `;
 
 const DrawerTop = styled.div`
@@ -349,6 +385,12 @@ const CloseButton = styled.button`
   border: 1px solid rgba(201, 162, 39, 0.5);
   border-radius: ${({ theme }) => theme.radius.medium};
   background: transparent;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.dourado};
+    outline-offset: 2px;
+  }
 
   span {
     position: absolute;
@@ -382,6 +424,7 @@ const DrawerLink = styled(Link)<{ $active: boolean }>`
   padding: 14px 10px;
   font-family: ${({ theme }) => theme.fonts.serif};
   font-size: 1.25rem;
+  cursor: pointer;
   color: ${({ $active, theme }) =>
     $active ? theme.colors.douradoClaro : theme.colors.texto};
   border-radius: ${({ theme }) => theme.radius.medium};
@@ -392,12 +435,17 @@ const DrawerLink = styled(Link)<{ $active: boolean }>`
     background: rgba(201, 162, 39, 0.08);
     color: ${({ theme }) => theme.colors.douradoClaro};
   }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.dourado};
+    outline-offset: 2px;
+  }
 `;
 
 const Number = styled.span`
   font-family: ${({ theme }) => theme.fonts.sans};
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
+  font-size: ${({ theme }) => theme.type.micro};
+  letter-spacing: ${({ theme }) => theme.tracking.nav};
   color: ${({ theme }) => theme.colors.dourado};
 `;
 
@@ -409,6 +457,7 @@ const DrawerCta = styled(Link)`
   padding: 15px 20px;
   border-radius: ${({ theme }) => theme.radius.full};
   font-weight: 600;
+  cursor: pointer;
   color: ${({ theme }) => theme.colors.verdePetroleoEscuro};
   background: linear-gradient(
     135deg,
@@ -416,4 +465,14 @@ const DrawerCta = styled(Link)`
     ${({ theme }) => theme.colors.dourado} 60%,
     ${({ theme }) => theme.colors.douradoEscuro} 100%
   );
+  transition: transform ${({ theme }) => theme.transitions.base};
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.dourado};
+    outline-offset: 4px;
+  }
 `;

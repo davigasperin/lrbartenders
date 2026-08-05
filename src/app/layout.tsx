@@ -3,9 +3,11 @@ import { Playfair_Display, Inter } from 'next/font/google';
 
 import StyledComponentsRegistry from '@/lib/registry';
 import { ThemeProvider } from '@/lib/theme-provider';
+import { SITE } from '@/lib/site';
 
 const serif = Playfair_Display({
   subsets: ['latin'],
+  style: ['normal', 'italic'],
   variable: '--font-serif',
   display: 'swap',
 });
@@ -17,6 +19,7 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE.url),
   title: 'LR Bartenders | Premium Open Bar para Festas e Eventos',
   description:
     'Sua festa merece o melhor! Bartenders profissionais, coquetelaria premium, cascata de chocolate, açaí e muito mais para eventos em Campinas e região.',
@@ -34,6 +37,16 @@ export const metadata: Metadata = {
     description: 'Sua festa merece o melhor! Premium open bar para festas e eventos.',
     locale: 'pt_BR',
     type: 'website',
+    url: SITE.url,
+    siteName: SITE.name,
+    images: [
+      {
+        url: '/images/logo.jpeg',
+        width: 1600,
+        height: 1557,
+        alt: 'LR Bartenders',
+      },
+    ],
   },
 };
 
@@ -45,8 +58,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${serif.variable} ${sans.variable}`}>
       <body>
+        <a className="skip-link" href="#main-content">Pular para o conteúdo</a>
         <StyledComponentsRegistry>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            <main id="main-content">{children}</main>
+          </ThemeProvider>
         </StyledComponentsRegistry>
       </body>
     </html>

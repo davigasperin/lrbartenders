@@ -29,7 +29,7 @@ export function EventTypes() {
         stagger: 0.1,
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 78%',
+          start: 'top 75%',
         },
       });
     }, sectionRef);

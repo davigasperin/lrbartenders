@@ -4,6 +4,8 @@ import { useLayoutEffect, useRef } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 
+import Container from '@/components/ui/Container';
+import { buttonBase, buttonSizes, buttonVariants } from '@/components/ui/Button';
 import { gsap } from '@/lib/gsap';
 import { CTA } from '@/lib/content';
 import { buildWhatsAppLink } from '@/lib/site';
@@ -46,7 +48,7 @@ export function CTASection() {
   return (
     <Section ref={sectionRef}>
       <Bg />
-      <Container>
+      <CtaContainer>
         <Title data-cta-anim>{CTA.title}</Title>
         <Subtitle data-cta-anim>{CTA.subtitle}</Subtitle>
         <Actions data-cta-anim>
@@ -57,7 +59,7 @@ export function CTASection() {
             {CTA.secondary.label}
           </Ghost>
         </Actions>
-      </Container>
+      </CtaContainer>
     </Section>
   );
 }
@@ -65,7 +67,7 @@ export function CTASection() {
 const Section = styled.section`
   position: relative;
   overflow: hidden;
-  padding: 120px 24px;
+  padding: ${({ theme }) => theme.spacing[128]} 24px;
   text-align: center;
 `;
 
@@ -81,15 +83,14 @@ const Bg = styled.div`
     url('/images/cta-bg.jpg') center / cover no-repeat;
 `;
 
-const Container = styled.div`
+const CtaContainer = styled(Container)`
   position: relative;
   z-index: ${({ theme }) => theme.zIndex.overlay};
   max-width: 760px;
-  margin: 0 auto;
 `;
 
 const Title = styled.h2`
-  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  font-size: ${({ theme }) => theme.type.displayMd};
   color: ${({ theme }) => theme.colors.texto};
 
   em {
@@ -98,13 +99,13 @@ const Title = styled.h2`
 `;
 
 const Subtitle = styled.p`
-  margin: 20px auto 0;
-  max-width: 580px;
+  margin: ${({ theme }) => theme.spacing[24]} auto 0;
+  max-width: 52ch;
   color: ${({ theme }) => theme.colors.textoMuted};
 `;
 
 const Actions = styled.div`
-  margin-top: 40px;
+  margin-top: ${({ theme }) => theme.spacing[40]};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -112,36 +113,13 @@ const Actions = styled.div`
   flex-wrap: wrap;
 `;
 
-const baseBtn = `
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px 34px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.98rem;
-  letter-spacing: 0.03em;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  &:hover { transform: translateY(-3px); }
-`;
-
 const Primary = styled(Link)`
-  ${baseBtn}
-  color: ${({ theme }) => theme.colors.verdePetroleoEscuro};
-  background: linear-gradient(
-    135deg,
-    ${({ theme }) => theme.colors.douradoClaro} 0%,
-    ${({ theme }) => theme.colors.dourado} 60%,
-    ${({ theme }) => theme.colors.douradoEscuro} 100%
-  );
-  box-shadow: ${({ theme }) => theme.shadows.goldStrong};
+  ${buttonBase}
+  ${buttonSizes.lg}
+  ${buttonVariants.primary}
 `;
-
 const Ghost = styled(Link)`
-  ${baseBtn}
-  color: ${({ theme }) => theme.colors.texto};
-  border: 1px solid rgba(240, 215, 123, 0.6);
-  background: rgba(7, 37, 41, 0.3);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  ${buttonBase}
+  ${buttonSizes.lg}
+  ${buttonVariants.ghost}
 `;

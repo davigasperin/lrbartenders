@@ -64,7 +64,7 @@ function CocktailGlass({ reduced }: { reduced: boolean }) {
 
   useFrame((state, delta) => {
     const group = groupRef.current;
-    if (!group) return;
+    if (!group || document.hidden) return;
     const t = state.clock.elapsedTime;
     group.rotation.y += delta * (reduced ? 0.12 : 0.22);
     group.rotation.x = Math.sin(t * 0.4) * 0.04;

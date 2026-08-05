@@ -1,31 +1,38 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
+
+function createMediaQuery(query: string) {
+  if (typeof window === 'undefined') return null;
+  return window.matchMedia(query);
+}
 
 export function useIsMobile(query = '(max-width: 768px)') {
-  const [isMobile, setIsMobile] = useState(false);
+  const mql = createMediaQuery(query);
 
-  useEffect(() => {
-    const mql = window.matchMedia(query);
-    const onChange = () => setIsMobile(mql.matches);
-    onChange();
-    mql.addEventListener('change', onChange);
-    return () => mql.removeEventListener('change', onChange);
-  }, [query]);
+  function getSnapshot() {
+    return mql?.matches ?? false;
+  }
 
-  return isMobile;
+  function subscribe(callback: () => void) {
+    mql?.addEventListener('change', callback);
+    return () => mql?.removeEventListener('change', callback);
+  }
+
+  return useSyncExternalStore(subscribe, getSnapshot, () => false);
+}
+
+const reducedMql = createMediaQuery('(prefers-reduced-motion: reduce)');
+
+function getReducedSnapshot() {
+  return reducedMql?.matches ?? false;
+}
+
+function subscribeReduced(callback: () => void) {
+  reducedMql?.addEventListener('change', callback);
+  return () => reducedMql?.removeEventListener('change', callback);
 }
 
 export function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const onChange = () => setReduced(mql.matches);
-    onChange();
-    mql.addEventListener('change', onChange);
-    return () => mql.removeEventListener('change', onChange);
-  }, []);
-
-  return reduced;
+  return useSyncExternalStore(subscribeReduced, getReducedSnapshot, () => false);
 }

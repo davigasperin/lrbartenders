@@ -6,6 +6,7 @@ import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 import styled from 'styled-components';
 
+import Container from '@/components/ui/Container';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { gsap } from '@/lib/gsap';
 import { GALLERY } from '@/lib/content';
@@ -69,7 +70,7 @@ export function Gallery() {
         <Masonry>
           {GALLERY.map((src, i) => (
             <Item key={src} data-gallery-item>
-              <Tile onClick={() => setIndex(i)} $ratio={ratios[i % ratios.length]}>
+              <Tile onClick={() => setIndex(i)} $ratio={ratios[i % ratios.length]} aria-label={`Abrir imagem ${i + 1} — Evento LR Bartenders`}>
                 <Image
                   src={src}
                   alt={`Evento LR Bartenders ${i + 1}`}
@@ -105,28 +106,22 @@ const Section = styled.section`
   background: ${({ theme }) => theme.colors.fundoAlt};
 `;
 
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-`;
-
 const Masonry = styled.div`
   columns: 3;
-  column-gap: 20px;
+  column-gap: 28px;
 
   @media (max-width: 1024px) {
     columns: 2;
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.small}) {
     columns: 1;
   }
 `;
 
 const Item = styled.figure`
   break-inside: avoid;
-  margin: 0 0 20px;
+  margin: 0 0 28px;
 `;
 
 const Tile = styled.button<{ $ratio: string }>`
@@ -144,6 +139,11 @@ const Tile = styled.button<{ $ratio: string }>`
 
   &:hover {
     transform: perspective(900px) scale(1.03) rotateX(1.5deg);
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.dourado};
+    outline-offset: 4px;
   }
 `;
 

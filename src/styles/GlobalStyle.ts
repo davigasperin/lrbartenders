@@ -1,7 +1,5 @@
 import { createGlobalStyle } from "styled-components";
 
-import { containerMaxWidth } from "./theme";
-
 export const GlobalStyle = createGlobalStyle`
   *,
   *::before,
@@ -9,10 +7,6 @@ export const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-  }
-
-  html {
-    scroll-behavior: smooth;
   }
 
   body {
@@ -46,6 +40,28 @@ export const GlobalStyle = createGlobalStyle`
     cursor: pointer;
   }
 
+  body.no-scroll {
+    overflow: hidden;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 16px;
+    z-index: 9999;
+    padding: 12px 24px;
+    background: ${({ theme }) => theme.colors.dourado};
+    color: ${({ theme }) => theme.colors.verdePetroleoEscuro};
+    font-weight: 600;
+    border-radius: ${({ theme }) => theme.radius.medium};
+    text-decoration: none;
+    transition: top 0.2s ease;
+
+    &:focus {
+      top: 16px;
+    }
+  }
+
   img,
   svg,
   canvas {
@@ -73,13 +89,6 @@ export const GlobalStyle = createGlobalStyle`
 
   ::-webkit-scrollbar-thumb:hover {
     background: ${({ theme }) => theme.colors.dourado};
-  }
-
-  .container {
-    width: 100%;
-    max-width: ${containerMaxWidth};
-    margin: 0 auto;
-    padding: 0 24px;
   }
 
   .section {

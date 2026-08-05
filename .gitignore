@@ -32,3 +32,16 @@ next-env.d.ts
 
 # images duplicadas mantidas apenas como referência no repo raiz
 # (as usadas no site ficam em public/images/)
+
+# tooling e planejamento
+.opencode/
+.planning/
+design-system/
+AGENTS.md
+
+# arquivos locais
+Proposta Comercial*.pdf
+WhatsApp Image*.jpeg
+logo-removebg-preview.png
+logo.jpeg
+_imports/

@@ -4,19 +4,20 @@ import { useLayoutEffect, useRef } from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
 
+import Container from '@/components/ui/Container';
 import { SectionTitle } from '@/components/ui/SectionTitle';
-import { gsap } from '@/lib/gsap';
+import { gsap, ScrollTrigger } from '@/lib/gsap';
 import { ABOUT } from '@/lib/content';
-import { useIsMobile, usePrefersReducedMotion } from '@/hooks/useMedia';
+import { usePrefersReducedMotion } from '@/hooks/useMedia';
 
 export function About() {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const isMobile = useIsMobile();
+  const imageRef = useRef<HTMLDivElement | null>(null);
   const reduced = usePrefersReducedMotion();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      if (reduced || isMobile) {
+      if (reduced) {
         gsap.set('[data-about-anim]', { autoAlpha: 1, y: 0 });
         return;
       }
@@ -33,23 +34,34 @@ export function About() {
         },
       });
 
-      gsap.to('[data-about-image]', {
-        y: 14,
-        duration: 2.4,
-        yoyo: true,
-        repeat: -1,
-        ease: 'sine.inOut',
-      });
+      if (imageRef.current) {
+        const floatAnim = gsap.to(imageRef.current, {
+          y: 14,
+          duration: 2.4,
+          yoyo: true,
+          repeat: -1,
+          ease: 'sine.inOut',
+        });
+
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          onLeave: () => floatAnim.pause(),
+          onEnterBack: () => floatAnim.resume(),
+        });
+      }
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [isMobile, reduced]);
+  }, [reduced]);
 
   return (
     <Section ref={sectionRef} id="sobre" className="section">
-      <Container>
+      <AboutGrid>
         <Content>
           <SectionTitle
+            align="left"
             eyebrow="Sobre nós"
             title={
               <>
@@ -77,9 +89,8 @@ export function About() {
         </Content>
 
         <Visual data-about-anim>
-          <Frame>
+          <Frame ref={imageRef}>
             <Image
-              data-about-image
               src={ABOUT.image}
               alt="Bartender da LR Bartenders preparando drinks em evento"
               fill
@@ -88,7 +99,7 @@ export function About() {
             />
           </Frame>
         </Visual>
-      </Container>
+      </AboutGrid>
     </Section>
   );
 }
@@ -99,10 +110,7 @@ const Section = styled.section`
   overflow: hidden;
 `;
 
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
+const AboutGrid = styled(Container)`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 64px;
@@ -118,14 +126,16 @@ const Content = styled.div``;
 
 const Lead = styled.p`
   font-family: ${({ theme }) => theme.fonts.serif};
-  font-size: 1.35rem;
-  line-height: 1.4;
+  font-size: ${({ theme }) => theme.type.lead};
+  line-height: ${({ theme }) => theme.lineHeights.lead};
   color: ${({ theme }) => theme.colors.douradoClaro};
   margin-bottom: 20px;
 `;
 
 const Paragraph = styled.p`
   color: ${({ theme }) => theme.colors.textoMuted};
+  font-size: ${({ theme }) => theme.type.body};
+  line-height: ${({ theme }) => theme.lineHeights.body};
   margin-bottom: 14px;
 `;
 
@@ -134,6 +144,10 @@ const Stats = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin: 28px 0;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Stat = styled.div`
@@ -146,20 +160,20 @@ const Stat = styled.div`
 
 const StatValue = styled.div`
   font-family: ${({ theme }) => theme.fonts.serif};
-  font-size: 1.7rem;
+  font-size: ${({ theme }) => theme.type.headingLg};
   color: ${({ theme }) => theme.colors.dourado};
 `;
 
 const StatLabel = styled.div`
   margin-top: 4px;
-  font-size: 0.8rem;
+  font-size: ${({ theme }) => theme.type.bodyXs};
   color: ${({ theme }) => theme.colors.textoMuted};
 `;
 
 const Highlight = styled.p`
   font-family: ${({ theme }) => theme.fonts.serif};
   font-style: italic;
-  font-size: 1.05rem;
+  font-size: ${({ theme }) => theme.type.body};
   color: ${({ theme }) => theme.colors.dourado};
 `;
 

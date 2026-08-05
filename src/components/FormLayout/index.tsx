@@ -2,11 +2,12 @@
 
 import type { ReactNode } from 'react';
 import styled from 'styled-components';
+import Container from '@/components/ui/Container';
 
 export function FormLayout({ children }: { children: ReactNode }) {
   return (
     <Section className="section">
-      <Container>{children}</Container>
+      <FormGrid>{children}</FormGrid>
     </Section>
   );
 }
@@ -26,10 +27,7 @@ const Section = styled.section`
   background: ${({ theme }) => theme.colors.fundo};
 `;
 
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
+const FormGrid = styled(Container)`
   display: grid;
   grid-template-columns: 1.6fr 1fr;
   gap: 56px;

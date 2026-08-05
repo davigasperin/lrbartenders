@@ -2,14 +2,32 @@
 
 import { useLayoutEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import Link from 'next/link';
 import styled from 'styled-components';
 
+import { buttonBase, buttonSizes, buttonVariants } from '@/components/ui/Button';
 import { gsap, SplitText } from '@/lib/gsap';
 import { SITE } from '@/lib/site';
 import { useIsMobile, usePrefersReducedMotion } from '@/hooks/useMedia';
 
-const HeroCanvas = dynamic(() => import('./HeroCanvas'), { ssr: false });
+const HeroCanvas = dynamic(() => import('./HeroCanvas'), {
+  ssr: false,
+  loading: () => <CanvasPlaceholder />,
+});
+
+function CanvasPlaceholder() {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'linear-gradient(160deg, #072529 0%, #0B3A3F 42%, #5A1F2E 100%)',
+      }}
+      aria-hidden="true"
+    />
+  );
+}
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -21,6 +39,7 @@ export function Hero() {
     const ctx = gsap.context(() => {
       if (reduced) {
         gsap.set('[data-hero-anim]', { autoAlpha: 1, y: 0 });
+        gsap.set('[data-hero-image]', { autoAlpha: 1, y: 0, rotateY: 0 });
         return;
       }
 
@@ -30,24 +49,42 @@ export function Hero() {
 
       const chars = split.flatMap((s) => s.chars);
 
-      gsap.from(chars, {
-        y: 70,
-        autoAlpha: 0,
-        rotateX: -40,
-        duration: 1,
-        ease: 'power3.out',
-        stagger: 0.035,
-        delay: 0.15,
-      });
+      gsap.fromTo(chars,
+        { y: 70, autoAlpha: 0, rotateX: -40 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          rotateX: 0,
+          duration: 1,
+          ease: 'power3.out',
+          stagger: 0.035,
+          delay: 0.15,
+        },
+      );
 
-      gsap.from('[data-hero-anim]', {
-        y: 40,
-        autoAlpha: 0,
-        duration: 1,
-        ease: 'power3.out',
-        stagger: 0.12,
-        delay: 0.4,
-      });
+      gsap.fromTo('[data-hero-anim]',
+        { y: 40, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 1,
+          ease: 'power3.out',
+          stagger: 0.12,
+          delay: 0.4,
+        },
+      );
+
+      gsap.fromTo('[data-hero-image]',
+        { y: 40, autoAlpha: 0, rotateY: -8 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          rotateY: 0,
+          duration: 1,
+          ease: 'power3.out',
+          delay: 0.6,
+        },
+      );
 
       gsap.to('[data-scroll-indicator]', {
         y: 12,
@@ -75,6 +112,16 @@ export function Hero() {
 
       <Overlay aria-hidden="true" />
 
+      <HeroImageFrame data-hero-image>
+        <Image
+          src="/images/hero.jpg"
+          alt="Close-up de coquetel premium servido pela LR Bartenders"
+          fill
+          sizes="(max-width: 1500px) 0vw, 22vw"
+          style={{ objectFit: 'cover' }}
+        />
+      </HeroImageFrame>
+
       <Content>
         <Eyebrow data-hero-anim>{SITE.tagline}</Eyebrow>
         <Title data-hero-title>
@@ -89,6 +136,16 @@ export function Hero() {
           <PrimaryCta href="/orcamento">Solicitar Orçamento</PrimaryCta>
           <GhostCta href="/contato">Agende uma Degustação</GhostCta>
         </CtaRow>
+
+        <HeroImageInline data-hero-anim>
+          <Image
+            src="/images/hero.jpg"
+            alt="Close-up de coquetel premium servido pela LR Bartenders"
+            fill
+            sizes="(min-width: 1500px) 0vw, 62vw"
+            style={{ objectFit: 'cover' }}
+          />
+        </HeroImageInline>
       </Content>
 
       <ScrollIndicator data-scroll-indicator aria-hidden="true">
@@ -132,25 +189,87 @@ const Content = styled.div`
   max-width: 900px;
   padding: 120px 24px 80px;
   text-align: center;
+
+  @media (min-width: 1500px) {
+    max-width: 800px;
+  }
+`;
+
+const HeroImageFrame = styled.figure`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 6%;
+  margin: auto 0;
+  z-index: ${({ theme }) => theme.zIndex.overlay + 1};
+  width: clamp(240px, 22vw, 340px);
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border: 1px solid rgba(201, 162, 39, 0.45);
+  border-radius: ${({ theme }) => theme.radius.large};
+  box-shadow: ${({ theme }) => theme.shadows.card};
+  background: ${({ theme }) => theme.colors.verdePetroleoEscuro};
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    z-index: 2;
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: ${({ theme }) => theme.radius.medium};
+    pointer-events: none;
+  }
+
+  @media (max-width: 1500px) {
+    display: none;
+  }
+`;
+
+const HeroImageInline = styled.figure`
+  position: relative;
+  width: min(240px, 62vw);
+  aspect-ratio: 2 / 3;
+  margin: 28px auto 0;
+  overflow: hidden;
+  border: 1px solid rgba(201, 162, 39, 0.45);
+  border-radius: ${({ theme }) => theme.radius.large};
+  box-shadow: ${({ theme }) => theme.shadows.card};
+  background: ${({ theme }) => theme.colors.verdePetroleoEscuro};
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    z-index: 2;
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    border-radius: ${({ theme }) => theme.radius.medium};
+    pointer-events: none;
+  }
+
+  @media (min-width: 1500px) {
+    display: none;
+  }
 `;
 
 const Eyebrow = styled.p`
-  font-size: 0.85rem;
+  font-size: ${({ theme }) => theme.type.label};
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.douradoClaro};
   margin-bottom: 18px;
 
-  @media (max-width: 768px) {
-    font-size: 0.72rem;
+  @media (max-width: 640px) {
+    font-size: ${({ theme }) => theme.type.labelSm};
+    letter-spacing: 0.18em;
   }
 `;
 
 const Title = styled.h1`
-  font-size: clamp(3rem, 9vw, 6.5rem);
+  font-size: ${({ theme }) => theme.type.displayXl};
   color: ${({ theme }) => theme.colors.texto};
   text-transform: uppercase;
-  line-height: 1.02;
+  line-height: ${({ theme }) => theme.lineHeights.display};
   perspective: 600px;
 
   span {
@@ -158,10 +277,8 @@ const Title = styled.h1`
   }
 
   span:last-child {
-    background: ${({ theme }) => theme.gradients.goldText};
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: ${({ theme }) => theme.colors.douradoClaro};
+    font-family: ${({ theme }) => theme.fonts.serif};
     font-style: italic;
   }
 `;
@@ -176,13 +293,14 @@ const Subtitle = styled.p`
 
 const Description = styled.p`
   margin: 22px auto 0;
-  max-width: 620px;
-  font-size: 1.02rem;
+  max-width: 52ch;
+  font-size: ${({ theme }) => theme.type.body};
+  line-height: ${({ theme }) => theme.lineHeights.body};
   color: ${({ theme }) => theme.colors.textoMuted};
 `;
 
 const CtaRow = styled.div`
-  margin-top: 38px;
+  margin-top: ${({ theme }) => theme.spacing[40]};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -190,48 +308,15 @@ const CtaRow = styled.div`
   flex-wrap: wrap;
 `;
 
-const baseCta = `
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 14px 30px;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  letter-spacing: 0.03em;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  &:hover { transform: translateY(-3px); }
-`;
-
 const PrimaryCta = styled(Link)`
-  ${baseCta}
-  color: ${({ theme }) => theme.colors.verdePetroleoEscuro};
-  background: linear-gradient(
-    135deg,
-    ${({ theme }) => theme.colors.douradoClaro} 0%,
-    ${({ theme }) => theme.colors.dourado} 60%,
-    ${({ theme }) => theme.colors.douradoEscuro} 100%
-  );
-  animation: ctaGlow 2.6s ease-in-out infinite;
-
-  @keyframes ctaGlow {
-    0%,
-    100% {
-      box-shadow: 0 0 16px rgba(201, 162, 39, 0.4);
-    }
-    50% {
-      box-shadow: 0 0 34px rgba(240, 215, 123, 0.7);
-    }
-  }
+  ${buttonBase}
+  ${buttonSizes.md}
+  ${buttonVariants.primary}
 `;
-
 const GhostCta = styled(Link)`
-  ${baseCta}
-  color: ${({ theme }) => theme.colors.texto};
-  border: 1px solid rgba(201, 162, 39, 0.6);
-  background: rgba(7, 37, 41, 0.3);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  ${buttonBase}
+  ${buttonSizes.md}
+  ${buttonVariants.ghost}
 `;
 
 const ScrollIndicator = styled.div`

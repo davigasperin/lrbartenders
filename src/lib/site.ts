@@ -1,5 +1,6 @@
 export const SITE = {
   name: 'LR Bartenders',
+  url: 'https://lrbartenders.com.br',
   slogan: 'Sua festa merece o melhor!',
   tagline: 'Os melhores bartenders de Campinas e região',
   city: 'Campinas e região',

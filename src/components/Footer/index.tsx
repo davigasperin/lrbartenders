@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import styled from 'styled-components';
 
+import Container from '@/components/ui/Container';
 import { Logo } from '@/components/Logo';
 import { NAV_LINKS, SITE } from '@/lib/site';
 
@@ -30,19 +31,19 @@ export function Footer() {
 
         <Column>
           <Heading>Contato</Heading>
-          <FooterLink href={SITE.phoneHref}>{SITE.phone}</FooterLink>
-          <FooterLink href={`tel:+55${SITE.whatsapp}`}>{SITE.whatsappDisplay}</FooterLink>
-          <FooterLink href={`mailto:${SITE.email}`}>{SITE.email}</FooterLink>
-          <FooterLink href={SITE.instagramUrl}>Instagram: {SITE.instagram}</FooterLink>
+          <FooterLink href={SITE.phoneHref} aria-label={`Ligar para ${SITE.name}`}>{SITE.phone}</FooterLink>
+          <FooterLink href={`tel:+${SITE.whatsapp}`} aria-label={`Ligar para ${SITE.name} via WhatsApp`}>{SITE.whatsappDisplay}</FooterLink>
+          <FooterLink href={`mailto:${SITE.email}`} aria-label={`Enviar e-mail para ${SITE.name}`}>{SITE.email}</FooterLink>
+          <FooterLink href={SITE.instagramUrl} aria-label={`Instagram do ${SITE.name}`}>Instagram: {SITE.instagram}</FooterLink>
         </Column>
 
         <Column>
           <Heading>Redes sociais</Heading>
           <SocialRow>
-            <Social href={SITE.instagramUrl} aria-label="Instagram" target="_blank" rel="noreferrer">
+            <Social href={SITE.instagramUrl} aria-label="Instagram" target="_blank" rel="noopener noreferrer">
               <InstagramIcon />
             </Social>
-            <Social href={SITE.facebookUrl} aria-label="Facebook" target="_blank" rel="noreferrer">
+            <Social href={SITE.facebookUrl} aria-label="Facebook" target="_blank" rel="noopener noreferrer">
               <FacebookIcon />
             </Social>
           </SocialRow>
@@ -66,12 +67,6 @@ const FooterTag = styled.footer`
   border-top: 1px solid rgba(201, 162, 39, 0.18);
 `;
 
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-`;
-
 const TopGrid = styled(Container)`
   display: grid;
   grid-template-columns: 1.4fr 1fr 1.2fr 1fr;
@@ -93,7 +88,7 @@ const Brand = styled.div``;
 const Tagline = styled.p`
   margin-top: 16px;
   color: ${({ theme }) => theme.colors.textoMuted};
-  font-size: 0.92rem;
+  font-size: ${({ theme }) => theme.type.bodySm};
   max-width: 260px;
 `;
 
@@ -105,8 +100,8 @@ const Column = styled.div`
 
 const Heading = styled.h4`
   font-family: ${({ theme }) => theme.fonts.sans};
-  font-size: 0.82rem;
-  letter-spacing: 0.18em;
+  font-size: ${({ theme }) => theme.type.label};
+  letter-spacing: ${({ theme }) => theme.tracking.labelTight};
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.dourado};
   margin-bottom: 6px;
@@ -114,12 +109,19 @@ const Heading = styled.h4`
 
 const FooterLink = styled(Link)`
   color: ${({ theme }) => theme.colors.textoMuted};
-  font-size: 0.94rem;
+  font-size: ${({ theme }) => theme.type.bodySm};
+  cursor: pointer;
   transition: color ${({ theme }) => theme.transitions.base};
   width: fit-content;
 
   &:hover {
     color: ${({ theme }) => theme.colors.douradoClaro};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.dourado};
+    outline-offset: 4px;
+    border-radius: 2px;
   }
 `;
 
@@ -137,12 +139,18 @@ const Social = styled(Link)`
   border: 1px solid rgba(201, 162, 39, 0.45);
   border-radius: ${({ theme }) => theme.radius.medium};
   color: ${({ theme }) => theme.colors.dourado};
+  cursor: pointer;
   transition: background-color ${({ theme }) => theme.transitions.base},
     box-shadow ${({ theme }) => theme.transitions.base};
 
   &:hover {
     background: rgba(201, 162, 39, 0.12);
     box-shadow: ${({ theme }) => theme.shadows.gold};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.dourado};
+    outline-offset: 2px;
   }
 `;
 
@@ -162,17 +170,17 @@ const FacebookIcon = () => (
 
 const SmallText = styled.p`
   color: ${({ theme }) => theme.colors.textoMuted};
-  font-size: 0.88rem;
+  font-size: ${({ theme }) => theme.type.bodyXs};
   margin-top: 8px;
 `;
 
 const Bottom = styled.div`
-  border-top: 1px solid rgba(201, 162, 39, 0.15);
+  border-top: 1px solid rgba(201, 162, 39, 0.18);
   padding: 20px 0;
 `;
 
 const Copy = styled.p`
   color: ${({ theme }) => theme.colors.textoMuted};
-  font-size: 0.82rem;
+  font-size: ${({ theme }) => theme.type.bodyXs};
   text-align: center;
 `;

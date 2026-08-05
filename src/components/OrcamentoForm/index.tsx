@@ -193,7 +193,7 @@ export function OrcamentoForm() {
         {SERVICES.map((service) => {
           const active = services.includes(service.title);
           return (
-            <Chip key={service.id} type="button" $active={active} onClick={() => toggleService(service.title)}>
+            <Chip key={service.id} type="button" $active={active} aria-pressed={active} onClick={() => toggleService(service.title)}>
               {service.title}
             </Chip>
           );
