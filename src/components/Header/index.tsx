@@ -15,7 +15,6 @@ export function Header() {
   const drawerRef = useRef<HTMLDivElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const burgerRef = useRef<HTMLButtonElement | null>(null);
-  const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -34,49 +33,14 @@ export function Header() {
     return () => ctx.revert();
   }, []);
 
-  useEffect(() => {
-    const drawer = drawerRef.current;
-    const overlay = overlayRef.current;
-    if (!drawer || !overlay) return;
-
-    const links = drawer.querySelectorAll<HTMLElement>('a');
-
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ paused: true });
-      tl.set(drawer, { xPercent: 100 })
-        .set(overlay, { autoAlpha: 0 })
-        .add('open')
-        .to(overlay, { autoAlpha: 1, duration: 0.4, ease: 'power2.out' }, 'open')
-        .to(
-          drawer,
-          { xPercent: 0, duration: 0.55, ease: 'power3.out' },
-          'open'
-        )
-        .fromTo(
-          links,
-          { x: 48, autoAlpha: 0 },
-          { x: 0, autoAlpha: 1, duration: 0.4, stagger: 0.06 },
-          'open+=0.18'
-        );
-      timelineRef.current = tl;
-    }, drawer);
-
-    return () => ctx.revert();
-  }, []);
-
   const toggleMenu = useCallback((open?: boolean) => {
-    const tl = timelineRef.current;
-    if (!tl) return;
-
     const shouldOpen = open ?? !menuOpen;
     setMenuOpen(shouldOpen);
 
     if (shouldOpen) {
       document.body.classList.add('no-scroll');
-      tl.play();
     } else {
       document.body.classList.remove('no-scroll');
-      tl.reverse();
       burgerRef.current?.focus();
     }
   }, [menuOpen]);
@@ -160,10 +124,10 @@ export function Header() {
         </Container>
       </HeaderBar>
 
-      <DrawerOverlay ref={overlayRef} onClick={() => toggleMenu(false)} />
+      <DrawerOverlay ref={overlayRef} $open={menuOpen} onClick={() => toggleMenu(false)} />
 
-      <Drawer ref={drawerRef} role="dialog" aria-modal="true" aria-label="Menu">
-        <DrawerTop>
+      <Drawer ref={drawerRef} $open={menuOpen} role="dialog" aria-modal="true" aria-label="Menu">
+        <DrawerTop $open={menuOpen}>
           <Link href="/" onClick={() => toggleMenu(false)} aria-label="LR Bartenders">
             <Logo size={44} />
           </Link>
@@ -174,21 +138,23 @@ export function Header() {
         </DrawerTop>
 
         <DrawerNav>
-          {NAV_LINKS.map((link) => (
+          {NAV_LINKS.map((link, index) => (
             <DrawerLink
               key={link.href}
               href={link.href}
               $active={pathname === link.href}
+              $open={menuOpen}
+              $delay={0.18 + index * 0.06}
               aria-current={pathname === link.href ? 'page' : undefined}
               onClick={() => toggleMenu(false)}
             >
-              <Number>0{NAV_LINKS.findIndex((l) => l.href === link.href) + 1}</Number>
+              <Number>0{index + 1}</Number>
               {link.label}
             </DrawerLink>
           ))}
         </DrawerNav>
 
-        <DrawerCta href="/orcamento" onClick={() => toggleMenu(false)}>
+        <DrawerCta href="/orcamento" $open={menuOpen} onClick={() => toggleMenu(false)}>
           Solicitar Orçamento
         </DrawerCta>
       </Drawer>
@@ -341,17 +307,28 @@ const Burger = styled.button<{ $open: boolean }>`
   }
 `;
 
-const DrawerOverlay = styled.div`
+const DrawerOverlay = styled.div<{ $open: boolean }>`
   position: fixed;
   inset: 0;
   z-index: ${({ theme }) => theme.zIndex.drawer - 1};
   background: rgba(4, 10, 12, 0.72);
   backdrop-filter: blur(4px);
-  visibility: hidden;
+  -webkit-backdrop-filter: blur(4px);
   cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+
+  ${({ $open }) =>
+    $open &&
+    `
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.4s ease;
+  `}
 `;
 
-const Drawer = styled.div`
+const Drawer = styled.div<{ $open: boolean }>`
   position: fixed;
   top: 0;
   right: 0;
@@ -368,14 +345,35 @@ const Drawer = styled.div`
   );
   box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
   transform: translateX(100%);
+  visibility: hidden;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.55s;
+
+  ${({ $open }) =>
+    $open &&
+    `
+    transform: translateX(0);
+    visibility: visible;
+  `}
 `;
 
-const DrawerTop = styled.div`
+const DrawerTop = styled.div<{ $open: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(201, 162, 39, 0.25);
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+
+  ${({ $open }) =>
+    $open &&
+    `
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.4s ease 0.18s, transform 0.4s ease 0.18s;
+  `}
 `;
 
 const CloseButton = styled.button`
@@ -417,7 +415,11 @@ const DrawerNav = styled.nav`
   gap: 6px;
 `;
 
-const DrawerLink = styled(Link)<{ $active: boolean }>`
+const DrawerLink = styled(Link)<{
+  $active: boolean;
+  $open: boolean;
+  $delay: number;
+}>`
   display: flex;
   align-items: center;
   gap: 14px;
@@ -430,6 +432,11 @@ const DrawerLink = styled(Link)<{ $active: boolean }>`
   border-radius: ${({ theme }) => theme.radius.medium};
   transition: background-color ${({ theme }) => theme.transitions.base},
     color ${({ theme }) => theme.transitions.base};
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 0.4s ease, transform 0.4s ease,
+    background-color ${({ theme }) => theme.transitions.base},
+    color ${({ theme }) => theme.transitions.base};
 
   &:hover {
     background: rgba(201, 162, 39, 0.08);
@@ -440,6 +447,16 @@ const DrawerLink = styled(Link)<{ $active: boolean }>`
     outline: 2px solid ${({ theme }) => theme.colors.dourado};
     outline-offset: 2px;
   }
+
+  ${({ $open, $delay, theme }) =>
+    $open &&
+    `
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.4s ease ${$delay}s, transform 0.4s ease ${$delay}s,
+      background-color ${theme.transitions.base},
+      color ${theme.transitions.base};
+  `}
 `;
 
 const Number = styled.span`
@@ -449,7 +466,7 @@ const Number = styled.span`
   color: ${({ theme }) => theme.colors.dourado};
 `;
 
-const DrawerCta = styled(Link)`
+const DrawerCta = styled(Link)<{ $open: boolean }>`
   margin-top: auto;
   display: flex;
   align-items: center;
@@ -465,7 +482,9 @@ const DrawerCta = styled(Link)`
     ${({ theme }) => theme.colors.dourado} 60%,
     ${({ theme }) => theme.colors.douradoEscuro} 100%
   );
-  transition: transform ${({ theme }) => theme.transitions.base};
+  transition: transform ${({ theme }) => theme.transitions.base},
+    opacity 0.4s ease;
+  opacity: 0;
 
   &:hover {
     transform: translateY(-2px);
@@ -475,4 +494,12 @@ const DrawerCta = styled(Link)`
     outline: 2px solid ${({ theme }) => theme.colors.dourado};
     outline-offset: 4px;
   }
+
+  ${({ $open, theme }) =>
+    $open &&
+    `
+    opacity: 1;
+    transition: transform ${theme.transitions.base},
+      opacity 0.4s ease 0.54s;
+  `}
 `;
