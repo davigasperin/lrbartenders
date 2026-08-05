@@ -120,6 +120,7 @@ export function Hero() {
               width={1600}
               height={1557}
               priority
+              unoptimized
               style={{ width: 'auto', height: 'clamp(150px, 30vh, 300px)' }}
             />
           </Medallion>
