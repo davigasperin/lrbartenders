@@ -115,12 +115,12 @@ export function Hero() {
         <HeroTitle data-hero-logo>
           <Medallion>
             <Image
-              src="/images/logo.png"
+              src="/images/logo.jpeg"
               alt="LR Bartenders"
-              width={370}
-              height={392}
+              width={1600}
+              height={1557}
               priority
-              style={{ width: 'auto', height: 'clamp(130px, 28vh, 280px)' }}
+              style={{ width: 'auto', height: 'clamp(150px, 30vh, 300px)' }}
             />
           </Medallion>
         </HeroTitle>
@@ -273,24 +273,19 @@ const Medallion = styled.figure`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(14px, 2.5vw, 24px);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 35% 30%,
-    ${({ theme }) => theme.colors.verdePetroleoClaro} 0%,
-    ${({ theme }) => theme.colors.verdePetroleoEscuro} 55%,
-    ${({ theme }) => theme.colors.vinhoEscuro} 100%
-  );
-  border: 2px solid rgba(201, 162, 39, 0.6);
-  box-shadow: 0 0 45px rgba(201, 162, 39, 0.22),
+  padding: clamp(0px, 1vw, 6px);
+  border-radius: 18px;
+  background: ${({ theme }) => theme.colors.verdePetroleoEscuro};
+  border: 1px solid rgba(201, 162, 39, 0.55);
+  box-shadow: 0 0 50px rgba(201, 162, 39, 0.25),
     0 24px 60px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(0, 0, 0, 0.3);
 
-  &::before {
+  &::after {
     content: '';
     position: absolute;
-    inset: 6px;
-    border-radius: 50%;
-    border: 1px solid rgba(201, 162, 39, 0.35);
+    inset: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(201, 162, 39, 0.3);
     pointer-events: none;
   }
 `;
