@@ -263,6 +263,8 @@ const Eyebrow = styled.p`
 const HeroTitle = styled.h1`
   margin: 0;
   line-height: 1;
+  display: flex;
+  justify-content: center;
   filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.45));
 `;
 
