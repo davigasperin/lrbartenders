@@ -15,7 +15,7 @@ export function Footer() {
       <TopGrid>
         <Brand>
           <Link href="/" aria-label={`${SITE.name} — home`}>
-            <Logo size={52} />
+            <Logo size={64} />
           </Link>
           <Tagline>{SITE.tagline}.</Tagline>
         </Brand>

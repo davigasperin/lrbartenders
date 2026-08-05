@@ -165,7 +165,7 @@ export function Header() {
       <Drawer ref={drawerRef} role="dialog" aria-modal="true" aria-label="Menu">
         <DrawerTop>
           <Link href="/" onClick={() => toggleMenu(false)} aria-label="LR Bartenders">
-            <Logo size={34} />
+            <Logo size={44} />
           </Link>
           <CloseButton onClick={() => toggleMenu(false)} aria-label="Fechar menu">
             <span />
@@ -218,7 +218,7 @@ const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
-  height: 76px;
+  height: 84px;
   display: flex;
   align-items: center;
   justify-content: space-between;
