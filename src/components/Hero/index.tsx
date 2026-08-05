@@ -7,7 +7,7 @@ import Link from 'next/link';
 import styled from 'styled-components';
 
 import { buttonBase, buttonSizes, buttonVariants } from '@/components/ui/Button';
-import { gsap, SplitText } from '@/lib/gsap';
+import { gsap } from '@/lib/gsap';
 import { SITE } from '@/lib/site';
 import { useIsMobile, usePrefersReducedMotion } from '@/hooks/useMedia';
 
@@ -31,7 +31,6 @@ function CanvasPlaceholder() {
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const splitRef = useRef<SplitText[] | null>(null);
   const isMobile = useIsMobile();
   const reduced = usePrefersReducedMotion();
 
@@ -40,27 +39,9 @@ export function Hero() {
       if (reduced) {
         gsap.set('[data-hero-anim]', { autoAlpha: 1, y: 0 });
         gsap.set('[data-hero-image]', { autoAlpha: 1, y: 0, rotateY: 0 });
+        gsap.set('[data-hero-logo]', { autoAlpha: 1, y: 0, scale: 1 });
         return;
       }
-
-      const split = gsap.utils
-        .toArray<HTMLElement>('[data-hero-title]')
-        .map((el) => new SplitText(el, { type: 'chars,words' }));
-
-      const chars = split.flatMap((s) => s.chars);
-
-      gsap.fromTo(chars,
-        { y: 70, autoAlpha: 0, rotateX: -40 },
-        {
-          y: 0,
-          autoAlpha: 1,
-          rotateX: 0,
-          duration: 1,
-          ease: 'power3.out',
-          stagger: 0.035,
-          delay: 0.15,
-        },
-      );
 
       gsap.fromTo('[data-hero-anim]',
         { y: 40, autoAlpha: 0 },
@@ -86,6 +67,18 @@ export function Hero() {
         },
       );
 
+      gsap.fromTo('[data-hero-logo]',
+        { y: 30, autoAlpha: 0, scale: 0.92 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          scale: 1,
+          duration: 1.1,
+          ease: 'power3.out',
+          delay: 0.15,
+        },
+      );
+
       gsap.to('[data-scroll-indicator]', {
         y: 12,
         autoAlpha: 0.25,
@@ -94,14 +87,9 @@ export function Hero() {
         repeat: -1,
         ease: 'sine.inOut',
       });
-
-      splitRef.current = split;
     }, sectionRef);
 
-    return () => {
-      splitRef.current?.forEach((s) => s.revert());
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, [reduced]);
 
   return (
@@ -124,9 +112,16 @@ export function Hero() {
 
       <Content>
         <Eyebrow data-hero-anim>{SITE.tagline}</Eyebrow>
-        <Title data-hero-title>
-          <span>LR</span> <span>Bartenders</span>
-        </Title>
+        <HeroTitle data-hero-logo>
+          <Image
+            src="/images/logo.png"
+            alt="LR Bartenders"
+            width={370}
+            height={392}
+            priority
+            style={{ width: 'auto', height: 'clamp(96px, 20vh, 190px)' }}
+          />
+        </HeroTitle>
         <Subtitle data-hero-anim>{SITE.slogan}</Subtitle>
         <Description data-hero-anim>
           Coquetelaria premium, cascata de chocolate, açaí, gin e muito mais
@@ -265,22 +260,10 @@ const Eyebrow = styled.p`
   }
 `;
 
-const Title = styled.h1`
-  font-size: ${({ theme }) => theme.type.displayXl};
-  color: ${({ theme }) => theme.colors.texto};
-  text-transform: uppercase;
-  line-height: ${({ theme }) => theme.lineHeights.display};
-  perspective: 600px;
-
-  span {
-    display: inline-block;
-  }
-
-  span:last-child {
-    color: ${({ theme }) => theme.colors.douradoClaro};
-    font-family: ${({ theme }) => theme.fonts.serif};
-    font-style: italic;
-  }
+const HeroTitle = styled.h1`
+  margin: 0;
+  line-height: 1;
+  filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.45));
 `;
 
 const Subtitle = styled.p`
