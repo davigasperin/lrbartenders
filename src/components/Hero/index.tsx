@@ -10,6 +10,7 @@ import { buttonBase, buttonSizes, buttonVariants } from '@/components/ui/Button'
 import { gsap } from '@/lib/gsap';
 import { SITE } from '@/lib/site';
 import { useIsMobile, usePrefersReducedMotion } from '@/hooks/useMedia';
+import { usePointerTilt } from '@/hooks/usePointerTilt';
 
 const HeroCanvas = dynamic(() => import('./HeroCanvas'), {
   ssr: false,
@@ -33,6 +34,7 @@ export function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const isMobile = useIsMobile();
   const reduced = usePrefersReducedMotion();
+  const medallionTiltRef = usePointerTilt<HTMLElement>();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -113,7 +115,7 @@ export function Hero() {
       <Content>
         <Eyebrow data-hero-anim>{SITE.tagline}</Eyebrow>
         <HeroTitle data-hero-logo>
-          <Medallion>
+          <Medallion ref={medallionTiltRef}>
             <Image
               src="/images/logo.jpeg"
               alt="LR Bartenders"

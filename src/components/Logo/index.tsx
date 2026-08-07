@@ -3,13 +3,17 @@
 import Image from 'next/image';
 import styled from 'styled-components';
 
+import { usePointerTilt } from '@/hooks/usePointerTilt';
+
 type LogoProps = {
   size?: number;
 };
 
 export function Logo({ size = 52 }: LogoProps) {
+  const tiltRef = usePointerTilt<HTMLSpanElement>();
+
   return (
-    <Tile>
+    <Tile ref={tiltRef}>
       <Mark
         src="/images/logo.jpeg"
         alt=""
