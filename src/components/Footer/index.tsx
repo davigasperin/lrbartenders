@@ -31,8 +31,7 @@ export function Footer() {
 
         <Column>
           <Heading>Contato</Heading>
-          <FooterLink href={SITE.phoneHref} aria-label={`Ligar para ${SITE.name}`}>{SITE.phone}</FooterLink>
-          <FooterLink href={`tel:+${SITE.whatsapp}`} aria-label={`Ligar para ${SITE.name} via WhatsApp`}>{SITE.whatsappDisplay}</FooterLink>
+          <FooterLink href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent('Olá! Vim pelo site e gostaria de um orçamento.')}`} target="_blank" rel="noopener noreferrer" aria-label={`Falar com ${SITE.name} via WhatsApp`}>WhatsApp: {SITE.whatsappDisplay}</FooterLink>
           <FooterLink href={`mailto:${SITE.email}`} aria-label={`Enviar e-mail para ${SITE.name}`}>{SITE.email}</FooterLink>
           <FooterLink href={SITE.instagramUrl} aria-label={`Instagram do ${SITE.name}`}>Instagram: {SITE.instagram}</FooterLink>
         </Column>
