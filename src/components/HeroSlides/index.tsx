@@ -1,9 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styled from 'styled-components';
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/effect-fade';
+import 'swiper/css/pagination';
 
 import { SERVICOS_HERO_SLIDES } from '@/lib/content';
 import { usePrefersReducedMotion } from '@/hooks/useMedia';
@@ -14,43 +20,45 @@ const DURATION = 4000;
 export function HeroSlides() {
   const reduced = usePrefersReducedMotion();
   const tiltRef = usePointerTilt<HTMLElement>();
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    if (reduced) return;
-    const id = window.setInterval(() => {
-      setIndex((i) => (i + 1) % SERVICOS_HERO_SLIDES.length);
-    }, DURATION);
-    return () => window.clearInterval(id);
-  }, [reduced]);
+  const [counter, setCounter] = useState(1);
 
   return (
     <SlidesSection>
       <Frame ref={tiltRef}>
-        <Track>
-          {SERVICOS_HERO_SLIDES.map((slide, i) => (
-            <Slide as={Link} key={i} href={slide.href} $active={i === index}>
-              <Image
-                src={slide.image}
-                alt={slide.title}
-                fill
-                sizes="(max-width: 1500px) 0vw, 40vw"
-                style={{ objectFit: 'cover' }}
-                priority={i === 0}
-              />
-              <Gradient />
-              <Label>{slide.title}</Label>
-            </Slide>
+        <Swiper
+          modules={[Autoplay, EffectFade, Pagination]}
+          effect="fade"
+          fadeEffect={{ crossFade: true }}
+          loop
+          speed={650}
+          autoplay={
+            reduced
+              ? false
+              : { delay: DURATION, disableOnInteraction: true }
+          }
+          pagination={{ clickable: true }}
+          onSlideChange={(sw) => setCounter((sw.realIndex ?? sw.activeIndex) + 1)}
+        >
+          {SERVICOS_HERO_SLIDES.map((slide) => (
+            <SwiperSlide key={slide.image}>
+              <SlideLink href={slide.href}>
+                <Image
+                  src={slide.image}
+                  alt={slide.title}
+                  fill
+                  sizes="(max-width: 768px) 94vw, 600px"
+                  quality={82}
+                  style={{ objectFit: 'cover' }}
+                />
+                <Gradient />
+                <Label>{slide.title}</Label>
+              </SlideLink>
+            </SwiperSlide>
           ))}
-        </Track>
+        </Swiper>
 
-        <Dots aria-hidden="true">
-          {SERVICOS_HERO_SLIDES.map((_, i) => (
-            <Dot key={i} $active={i === index} onClick={() => setIndex(i)} />
-          ))}
-        </Dots>
         <Counter aria-hidden="true">
-          {String(index + 1).padStart(2, '0')} / {String(SERVICOS_HERO_SLIDES.length).padStart(2, '0')}
+          {String(counter).padStart(2, '0')} / {String(SERVICOS_HERO_SLIDES.length).padStart(2, '0')}
         </Counter>
         <Hint>Clique para ver os serviços</Hint>
       </Frame>
@@ -84,33 +92,55 @@ const Frame = styled.figure`
     width: 88vw;
     aspect-ratio: 16 / 9;
   }
+
+  .swiper {
+    width: 100%;
+    height: 100%;
+  }
+
+  .swiper-slide {
+    position: relative;
+    height: 100%;
+  }
+
+  .swiper-pagination {
+    right: 14px;
+    left: auto;
+    bottom: 16px;
+    width: auto;
+    display: flex;
+    gap: 6px;
+  }
+
+  .swiper-pagination-bullet {
+    width: 8px;
+    height: 8px;
+    margin: 0;
+    border-radius: 50%;
+    background: rgba(247, 243, 234, 0.4);
+    opacity: 1;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+
+  .swiper-pagination-bullet-active {
+    background: rgba(240, 215, 123, 0.95);
+  }
+
+  .swiper-pagination-bullet:hover {
+    transform: scale(1.3);
+  }
 `;
 
-const Track = styled.div`
-  position: absolute;
-  inset: 0;
-`;
-
-const Slide = styled(Link)<{ $active: boolean }>`
-  position: absolute;
-  inset: 0;
+const SlideLink = styled(Link)`
+  position: relative;
   display: block;
-  opacity: 0;
-  transition: opacity 0.8s ease, transform 0.8s ease;
-  &.focus-visible:focus {
+  width: 100%;
+  height: 100%;
+
+  &:focus-visible {
     outline: 2px solid rgba(240, 215, 123, 0.8);
     outline-offset: -4px;
   }
-
-  ${({ $active }) =>
-    $active
-      ? `
-    opacity: 1;
-    z-index: 1;
-  `
-      : `
-    z-index: 0;
-  `}
 `;
 
 const Gradient = styled.div`
@@ -135,36 +165,11 @@ const Label = styled.span`
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
 `;
 
-const Dots = styled.div`
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  display: flex;
-  gap: 6px;
-  z-index: 2;
-`;
-
-const Dot = styled.button<{ $active: boolean }>`
-  width: 8px;
-  height: 8px;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: ${({ $active }) =>
-    $active ? 'rgba(240, 215, 123, 0.95)' : 'rgba(247, 243, 234, 0.4)'};
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.3);
-  }
-`;
-
 const Counter = styled.span`
   position: absolute;
   top: 14px;
   right: 14px;
-  z-index: 2;
+  z-index: 3;
   font-size: 0.75rem;
   letter-spacing: 0.18em;
   color: rgba(247, 243, 234, 0.85);
@@ -175,7 +180,7 @@ const Hint = styled.span`
   position: absolute;
   top: 14px;
   left: 14px;
-  z-index: 2;
+  z-index: 3;
   font-size: 0.7rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
