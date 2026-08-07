@@ -4,6 +4,7 @@ import { Playfair_Display, Inter } from 'next/font/google';
 import StyledComponentsRegistry from '@/lib/registry';
 import { ThemeProvider } from '@/lib/theme-provider';
 import { SITE } from '@/lib/site';
+import { WhatsAppFloat } from '@/components/WhatsAppFloat';
 
 const serif = Playfair_Display({
   subsets: ['latin'],
@@ -62,6 +63,7 @@ export default function RootLayout({
         <StyledComponentsRegistry>
           <ThemeProvider>
             <main id="main-content">{children}</main>
+            <WhatsAppFloat />
           </ThemeProvider>
         </StyledComponentsRegistry>
       </body>
