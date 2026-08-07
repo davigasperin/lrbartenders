@@ -59,6 +59,8 @@ export function OrcamentoForm() {
     if (!form.nome.trim()) nextErrors.nome = true;
     if (!form.telefone.trim()) nextErrors.telefone = true;
     if (!form.tipo) nextErrors.tipo = true;
+    if (!form.data) nextErrors.data = true;
+    if (!form.convidados) nextErrors.convidados = true;
 
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
@@ -76,8 +78,8 @@ export function OrcamentoForm() {
     lines.push(
       '',
       `*Tipo de evento:* ${form.tipo}`,
-      `*Data prevista:* ${form.data || 'A definir'}`,
-      `*Convidados:* ${form.convidados || 'A definir'}`,
+      `*Data do evento:* ${form.data}`,
+      `*Convidados:* ${form.convidados}`,
       `*Local:* ${form.local.trim() || 'A definir'}`,
       `*Orçamento estimado:* ${form.orcamento || 'A definir'}`,
     );
@@ -156,11 +158,11 @@ export function OrcamentoForm() {
             ))}
           </Select>
         </Field>
-        <Field label="Data prevista">
-          <Input type="date" value={form.data} onChange={(e) => update('data', e.target.value)} />
+        <Field label="Data do evento" required error={errors.data ? 'Informe a data do evento.' : undefined}>
+          <Input type="date" value={form.data} onChange={(e) => update('data', e.target.value)} $invalid={errors.data} />
         </Field>
-        <Field label="Número de convidados">
-          <Select value={form.convidados} onChange={(e) => update('convidados', e.target.value)}>
+        <Field label="Número de convidados" required error={errors.convidados ? 'Informe o número de convidados.' : undefined}>
+          <Select value={form.convidados} onChange={(e) => update('convidados', e.target.value)} $invalid={errors.convidados}>
             <option value="">Selecione…</option>
             {GUEST_RANGES.map((g) => (
               <option key={g} value={g}>
