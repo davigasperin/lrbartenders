@@ -80,6 +80,34 @@ export const SERVICES: Service[] = [
   },
 ];
 
+export const SERVICOS_HERO_SLIDES: { title: string; image: string; href: string }[] = [
+  {
+    title: 'Coquetelaria Premium para eventos',
+    image: '/slides/coquetelaria-premium.jpg',
+    href: '/servicos',
+  },
+  {
+    title: 'Bar de Café',
+    image: '/slides/bar-cafe.jpg',
+    href: '/servicos',
+  },
+  {
+    title: 'Bar de Milk-shakes',
+    image: '/slides/milk-shakes.jpg',
+    href: '/servicos',
+  },
+  {
+    title: 'Cascata de Chocolate',
+    image: '/slides/cascata-chocolate.jpg',
+    href: '/servicos',
+  },
+  {
+    title: 'Bar de Açaí',
+    image: '/slides/bar-acai.jpg',
+    href: '/servicos',
+  },
+];
+
 export const MENUS: Menu[] = [
   {
     id: 'festival-caipirinhas',
