@@ -77,8 +77,8 @@ const Bg = styled.div`
   z-index: ${({ theme }) => theme.zIndex.base};
   background: linear-gradient(
       135deg,
-      rgba(11, 58, 63, 0.92) 0%,
-      rgba(90, 31, 46, 0.94) 100%
+      rgba(6, 35, 39, 0.92) 0%,
+      rgba(71, 24, 40, 0.94) 100%
     ),
     url('/images/cta-bg.jpg') center / cover no-repeat;
 `;

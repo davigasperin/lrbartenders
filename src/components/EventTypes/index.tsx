@@ -101,7 +101,7 @@ const Card = styled.article`
   overflow: hidden;
   border-radius: ${({ theme }) => theme.radius.large};
   border: 1px solid rgba(201, 162, 39, 0.18);
-  background: rgba(11, 58, 63, 0.28);
+  background: rgba(6, 35, 39, 0.28);
   transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
 
   &:hover {

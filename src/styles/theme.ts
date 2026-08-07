@@ -1,15 +1,15 @@
 export const theme = {
   colors: {
-    verdePetroleo: "#0B3A3F",
-    verdePetroleoEscuro: "#072529",
-    verdePetroleoClaro: "#15585F",
-    vinho: "#5A1F2E",
-    vinhoEscuro: "#3A0F1B",
+    verdePetroleo: "#062327",
+    verdePetroleoEscuro: "#031A1D",
+    verdePetroleoClaro: "#0E4048",
+    vinho: "#471828",
+    vinhoEscuro: "#2D0C15",
     dourado: "#C9A227",
     douradoClaro: "#F0D77B",
     douradoEscuro: "#9A7A1F",
-    fundo: "#0A1113",
-    fundoAlt: "#121D21",
+    fundo: "#05080B",
+    fundoAlt: "#0A1216",
     texto: "#F7F3EA",
     textoMuted: "#AAB6B9",
     error: "#D9534F",
@@ -78,8 +78,8 @@ export const theme = {
     card: "0 20px 60px rgba(0, 0, 0, 0.5)",
   },
   gradients: {
-    hero: "linear-gradient(160deg, rgba(7, 37, 41, 0.94) 0%, rgba(11, 58, 63, 0.8) 42%, rgba(90, 31, 46, 0.86) 100%)",
-    cta: "linear-gradient(135deg, #0B3A3F 0%, #5A1F2E 100%)",
+    hero: "linear-gradient(160deg, rgba(3, 26, 29, 0.94) 0%, rgba(6, 35, 39, 0.82) 42%, rgba(71, 24, 40, 0.88) 100%)",
+    cta: "linear-gradient(135deg, #062327 0%, #471828 100%)",
     goldText:
       "linear-gradient(135deg, #F7E4A8 0%, #C9A227 55%, #9A7A1F 100%)",
   },

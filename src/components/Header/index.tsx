@@ -173,7 +173,7 @@ const HeaderBar = styled.header`
     box-shadow 0.4s ease;
 
   &.is-scrolled {
-    background-color: rgba(7, 37, 41, 0.86);
+    background-color: rgba(3, 26, 29, 0.86);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
@@ -273,7 +273,7 @@ const Burger = styled.button<{ $open: boolean }>`
   height: 40px;
   border: 1px solid rgba(201, 162, 39, 0.5);
   border-radius: ${({ theme }) => theme.radius.medium};
-  background: rgba(7, 37, 41, 0.5);
+  background: rgba(3, 26, 29, 0.5);
   flex-direction: column;
   align-items: center;
   justify-content: center;

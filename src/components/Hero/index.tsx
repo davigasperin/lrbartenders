@@ -22,7 +22,7 @@ function CanvasPlaceholder() {
       style={{
         position: 'absolute',
         inset: 0,
-        background: 'linear-gradient(160deg, #072529 0%, #0B3A3F 42%, #5A1F2E 100%)',
+        background: 'linear-gradient(160deg, #031A1D 0%, #062327 42%, #471828 100%)',
       }}
       aria-hidden="true"
     />

@@ -13,7 +13,7 @@ export function FormLayout({ children }: { children: ReactNode }) {
 }
 
 export const FormCard = styled.div`
-  background: rgba(11, 58, 63, 0.18);
+  background: rgba(6, 35, 39, 0.18);
   border: 1px solid rgba(201, 162, 39, 0.18);
   border-radius: ${({ theme }) => theme.radius.large};
   padding: 36px;

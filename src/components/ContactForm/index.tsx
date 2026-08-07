@@ -180,7 +180,7 @@ const Success = styled.div`
   padding: 56px 24px;
   border: 1px solid rgba(201, 162, 39, 0.3);
   border-radius: ${({ theme }) => theme.radius.large};
-  background: rgba(11, 58, 63, 0.3);
+  background: rgba(6, 35, 39, 0.3);
 
   a {
     display: inline-block;

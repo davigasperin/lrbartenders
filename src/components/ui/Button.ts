@@ -31,7 +31,7 @@ const buttonVariants: Record<ButtonVariant, ReturnType<typeof css>> = {
   ghost: css`
     color: ${({ theme }) => theme.colors.texto};
     border: 1px solid rgba(201, 162, 39, 0.6);
-    background: rgba(7, 37, 41, 0.3);
+    background: rgba(3, 26, 29, 0.3);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
   `,

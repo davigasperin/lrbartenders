@@ -234,7 +234,7 @@ const PillarCard = styled.article`
   padding: 32px 28px;
   border: 1px solid rgba(201, 162, 39, 0.18);
   border-radius: ${({ theme }) => theme.radius.large};
-  background: rgba(11, 58, 63, 0.32);
+  background: rgba(6, 35, 39, 0.32);
   transition: transform 0.35s ease, border-color 0.35s ease;
 
   &:hover {

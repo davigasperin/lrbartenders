@@ -140,7 +140,7 @@ const Item = styled.article<{ $open: boolean }>`
     ${({ $open }) =>
       $open ? 'rgba(201, 162, 39, 0.55)' : 'rgba(201, 162, 39, 0.18)'};
   border-radius: ${({ theme }) => theme.radius.large};
-  background: rgba(11, 58, 63, 0.28);
+  background: rgba(6, 35, 39, 0.28);
   overflow: hidden;
   transition: border-color 0.3s ease;
 `;

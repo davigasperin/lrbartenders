@@ -96,7 +96,7 @@ const Item = styled.div`
   padding: 16px 14px;
   border-radius: ${({ theme }) => theme.radius.medium};
   border: 1px solid rgba(201, 162, 39, 0.16);
-  background: rgba(11, 58, 63, 0.24);
+  background: rgba(6, 35, 39, 0.24);
   transition: border-color 0.3s ease;
 
   &:hover {
@@ -141,8 +141,8 @@ const CtaCard = styled.div`
   border-radius: ${({ theme }) => theme.radius.large};
   background: linear-gradient(
     135deg,
-    rgba(11, 58, 63, 0.85),
-    rgba(90, 31, 46, 0.9)
+    rgba(6, 35, 39, 0.85),
+    rgba(71, 24, 40, 0.9)
   );
   border: 1px solid rgba(201, 162, 39, 0.3);
 
