@@ -23,7 +23,7 @@ export const ABOUT = {
   ],
   stats: [
     { value: '2012', label: 'Ano de fundação' },
-    { value: '+500', label: 'Eventos realizados' },
+    { value: '+1200', label: 'Eventos realizados' },
     { value: '100%', label: 'Satisfação' },
   ],
   image: '/images/sobre-quem-somos.jpg',
@@ -154,7 +154,7 @@ export const ABOUT_PAGE = {
     image: '/images/topo-site-01.jpg',
     stats: [
       { value: '2012', label: 'Ano de fundação' },
-      { value: '+500', label: 'Eventos realizados' },
+      { value: '+1200 ', label: 'Eventos realizados' },
       { value: '100%', label: 'Satisfação' },
     ],
   },
