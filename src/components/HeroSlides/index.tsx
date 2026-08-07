@@ -6,11 +6,12 @@ import Link from 'next/link';
 import styled from 'styled-components';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
+import { A11y, Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
 
+import { SectionTitle } from '@/components/ui/SectionTitle';
 import { SERVICOS_HERO_SLIDES } from '@/lib/content';
 import { usePrefersReducedMotion } from '@/hooks/useMedia';
 import { usePointerTilt } from '@/hooks/usePointerTilt';
@@ -24,27 +25,36 @@ export function HeroSlides() {
 
   return (
     <SlidesSection>
+      <SectionTitle
+        eyebrow="Serviços"
+        title={
+          <>
+            Nossos serviços em <em>destaque</em>
+          </>
+        }
+        subtitle="Clique em um serviço para conhecer tudo o que podemos fazer pelo seu evento."
+      />
       <Frame ref={tiltRef}>
         <Swiper
-          modules={[Autoplay, EffectFade, Pagination]}
+          modules={[A11y, Autoplay, EffectFade, Pagination]}
           effect="fade"
           fadeEffect={{ crossFade: true }}
-          loop
           speed={650}
           autoplay={
             reduced
               ? false
-              : { delay: DURATION, disableOnInteraction: true }
+              : { delay: DURATION, disableOnInteraction: true, pauseOnMouseEnter: true }
           }
           pagination={{ clickable: true }}
-          onSlideChange={(sw) => setCounter((sw.realIndex ?? sw.activeIndex) + 1)}
+          a11y={{ paginationBulletMessage: 'Ir para o slide {{index}}' }}
+          onSlideChange={(sw) => setCounter(sw.activeIndex + 1)}
         >
           {SERVICOS_HERO_SLIDES.map((slide) => (
             <SwiperSlide key={slide.image}>
               <SlideLink href={slide.href}>
                 <Image
                   src={slide.image}
-                  alt={slide.title}
+                  alt=""
                   fill
                   sizes="(max-width: 768px) 94vw, 600px"
                   quality={82}
@@ -109,12 +119,12 @@ const Frame = styled.figure`
     bottom: 16px;
     width: auto;
     display: flex;
-    gap: 6px;
+    gap: 7px;
   }
 
   .swiper-pagination-bullet {
-    width: 8px;
-    height: 8px;
+    width: 9px;
+    height: 9px;
     margin: 0;
     border-radius: 50%;
     background: rgba(247, 243, 234, 0.4);
@@ -128,6 +138,18 @@ const Frame = styled.figure`
 
   .swiper-pagination-bullet:hover {
     transform: scale(1.3);
+  }
+
+  @media (max-width: 640px) {
+    .swiper-pagination {
+      bottom: 14px;
+      right: 12px;
+    }
+
+    .swiper-pagination-bullet {
+      width: 10px;
+      height: 10px;
+    }
   }
 `;
 
@@ -157,12 +179,18 @@ const Gradient = styled.div`
 const Label = styled.span`
   position: absolute;
   left: 16px;
-  right: 16px;
+  right: 72px;
   bottom: 16px;
   font-family: ${({ theme }) => theme.fonts.serif};
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 4vw, 1.25rem);
+  line-height: 1.25;
   color: ${({ theme }) => theme.colors.douradoClaro};
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+
+  @media (max-width: 640px) {
+    right: 64px;
+    bottom: 14px;
+  }
 `;
 
 const Counter = styled.span`
