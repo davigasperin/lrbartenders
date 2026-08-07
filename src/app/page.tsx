@@ -3,6 +3,7 @@
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { About } from '@/components/About';
+import { HeroSlides } from '@/components/HeroSlides';
 import { Services } from '@/components/Services';
 import { MenuShowcase } from '@/components/MenuShowcase';
 import { Gallery } from '@/components/Gallery';
@@ -15,6 +16,7 @@ export default function Home() {
       <Header />
       <Hero />
       <About />
+      <HeroSlides />
       <Services />
       <MenuShowcase />
       <Gallery />

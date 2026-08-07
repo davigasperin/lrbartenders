@@ -25,40 +25,53 @@ export function HeroSlides() {
   }, [reduced]);
 
   return (
-    <Frame ref={tiltRef}>
-      <Track>
-        {SERVICOS_HERO_SLIDES.map((slide, i) => (
-          <Slide as={Link} key={i} href={slide.href} $active={i === index}>
-            <Image
-              src={slide.image}
-              alt={slide.title}
-              fill
-              sizes="(max-width: 1500px) 0vw, 40vw"
-              style={{ objectFit: 'cover' }}
-              priority={i === 0}
-            />
-            <Gradient />
-            <Label>{slide.title}</Label>
-          </Slide>
-        ))}
-      </Track>
+    <SlidesSection>
+      <Frame ref={tiltRef}>
+        <Track>
+          {SERVICOS_HERO_SLIDES.map((slide, i) => (
+            <Slide as={Link} key={i} href={slide.href} $active={i === index}>
+              <Image
+                src={slide.image}
+                alt={slide.title}
+                fill
+                sizes="(max-width: 1500px) 0vw, 40vw"
+                style={{ objectFit: 'cover' }}
+                priority={i === 0}
+              />
+              <Gradient />
+              <Label>{slide.title}</Label>
+            </Slide>
+          ))}
+        </Track>
 
-      <Dots aria-hidden="true">
-        {SERVICOS_HERO_SLIDES.map((_, i) => (
-          <Dot key={i} $active={i === index} onClick={() => setIndex(i)} />
-        ))}
-      </Dots>
-      <Counter aria-hidden="true">
-        {String(index + 1).padStart(2, '0')} / {String(SERVICOS_HERO_SLIDES.length).padStart(2, '0')}
-      </Counter>
-      <Hint>Clique para ver os serviços</Hint>
-    </Frame>
+        <Dots aria-hidden="true">
+          {SERVICOS_HERO_SLIDES.map((_, i) => (
+            <Dot key={i} $active={i === index} onClick={() => setIndex(i)} />
+          ))}
+        </Dots>
+        <Counter aria-hidden="true">
+          {String(index + 1).padStart(2, '0')} / {String(SERVICOS_HERO_SLIDES.length).padStart(2, '0')}
+        </Counter>
+        <Hint>Clique para ver os serviços</Hint>
+      </Frame>
+    </SlidesSection>
   );
 }
 
+const SlidesSection = styled.section`
+  padding: 80px 0 96px;
+  background: ${({ theme }) => theme.colors.fundo};
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    padding: 56px 0 64px;
+  }
+`;
+
 const Frame = styled.figure`
   position: relative;
-  width: min(400px, 82vw);
+  width: min(520px, 88vw);
   aspect-ratio: 16 / 10;
   border-radius: 20px;
   overflow: hidden;

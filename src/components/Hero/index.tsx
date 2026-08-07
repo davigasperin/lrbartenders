@@ -10,7 +10,7 @@ import { buttonBase, buttonSizes, buttonVariants } from '@/components/ui/Button'
 import { gsap } from '@/lib/gsap';
 import { SITE } from '@/lib/site';
 import { useIsMobile, usePrefersReducedMotion } from '@/hooks/useMedia';
-import { HeroSlides } from '@/components/HeroSlides';
+import { usePointerTilt } from '@/hooks/usePointerTilt';
 
 const HeroCanvas = dynamic(() => import('./HeroCanvas'), {
   ssr: false,
@@ -34,6 +34,7 @@ export function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const isMobile = useIsMobile();
   const reduced = usePrefersReducedMotion();
+  const medallionTiltRef = usePointerTilt<HTMLElement>();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -114,7 +115,17 @@ export function Hero() {
       <Content>
         <Eyebrow data-hero-anim>{SITE.tagline}</Eyebrow>
         <HeroTitle data-hero-logo>
-          <HeroSlides />
+          <Medallion ref={medallionTiltRef}>
+            <Image
+              src="/images/logo.jpeg"
+              alt="LR Bartenders"
+              width={1600}
+              height={1557}
+              priority
+              unoptimized
+              style={{ width: 'auto', height: 'clamp(150px, 30vh, 300px)' }}
+            />
+          </Medallion>
         </HeroTitle>
         <Description data-hero-anim>
           Coquetelaria premium, cascata de chocolate, açaí, gin e muito mais
@@ -258,6 +269,28 @@ const HeroTitle = styled.h1`
   line-height: 1;
   display: flex;
   justify-content: center;
+`;
+
+const Medallion = styled.figure`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0px, 1vw, 6px);
+  border-radius: 18px;
+  background: ${({ theme }) => theme.colors.verdePetroleoEscuro};
+  border: 1px solid rgba(201, 162, 39, 0.55);
+  box-shadow: 0 0 50px rgba(201, 162, 39, 0.25),
+    0 24px 60px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(201, 162, 39, 0.3);
+    pointer-events: none;
+  }
 `;
 
 const Description = styled.p`
