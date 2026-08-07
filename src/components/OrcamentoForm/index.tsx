@@ -4,7 +4,7 @@ import { useState, type FormEvent } from 'react';
 import styled from 'styled-components';
 
 import { Field, Input, Select, Textarea } from '@/components/ui/Form';
-import { SERVICES } from '@/lib/content';
+import { MENUS } from '@/lib/content';
 import { SITE, buildWhatsAppLink } from '@/lib/site';
 
 const EVENT_TYPES = ['Casamento', '15 Anos', 'Formatura', 'Corporativo', 'Aniversário', 'Festa Privada', 'Outro'];
@@ -192,11 +192,11 @@ export function OrcamentoForm() {
 
       <SectionTitle>Serviços de interesse</SectionTitle>
       <Chips>
-        {SERVICES.map((service) => {
-          const active = services.includes(service.title);
+        {MENUS.map((menu) => {
+          const active = services.includes(menu.title);
           return (
-            <Chip key={service.id} type="button" $active={active} aria-pressed={active} onClick={() => toggleService(service.title)}>
-              {service.title}
+            <Chip key={menu.id} type="button" $active={active} aria-pressed={active} onClick={() => toggleService(menu.title)}>
+              {menu.title}
             </Chip>
           );
         })}
