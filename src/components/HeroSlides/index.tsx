@@ -6,9 +6,8 @@ import Link from 'next/link';
 import styled from 'styled-components';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { A11y, Autoplay, EffectFade, Pagination } from 'swiper/modules';
+import { A11y, Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
-import 'swiper/css/effect-fade';
 import 'swiper/css/pagination';
 
 import { SectionTitle } from '@/components/ui/SectionTitle';
@@ -50,9 +49,11 @@ export function HeroSlides() {
 
       <Banner>
         <Swiper
-          modules={[A11y, Autoplay, EffectFade, Pagination]}
-          effect="fade"
-          fadeEffect={{ crossFade: true }}
+          modules={[A11y, Autoplay, Pagination]}
+          slidesPerView={1}
+          effect="slide"
+          allowTouchMove
+          grabCursor
           speed={800}
           rewind
           autoplay={autoplay}
