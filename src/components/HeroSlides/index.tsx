@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styled from 'styled-components';
@@ -16,10 +16,25 @@ import { SERVICOS_HERO_SLIDES } from '@/lib/content';
 import { usePrefersReducedMotion } from '@/hooks/useMedia';
 
 const DURATION = 4000;
+const DURATION_REDUCED = 7000;
 
 export function HeroSlides() {
   const reduced = usePrefersReducedMotion();
   const [counter, setCounter] = useState(1);
+
+  const autoplay = useMemo(
+    () => ({
+      delay: reduced ? DURATION_REDUCED : DURATION,
+      disableOnInteraction: false,
+      pauseOnMouseEnter: true,
+      waitForTransition: true,
+    }),
+    [reduced],
+  );
+
+  const onSlideChange = useCallback((sw: { activeIndex: number }) => {
+    setCounter(sw.activeIndex + 1);
+  }, []);
 
   return (
     <SlidesSection>
@@ -38,15 +53,12 @@ export function HeroSlides() {
           modules={[A11y, Autoplay, EffectFade, Pagination]}
           effect="fade"
           fadeEffect={{ crossFade: true }}
-          speed={650}
-          autoplay={
-            reduced
-              ? false
-              : { delay: DURATION, disableOnInteraction: true, pauseOnMouseEnter: true }
-          }
+          speed={800}
+          rewind
+          autoplay={autoplay}
           pagination={{ clickable: true }}
           a11y={{ paginationBulletMessage: 'Ir para o slide {{index}}' }}
-          onSlideChange={(sw) => setCounter(sw.activeIndex + 1)}
+          onSlideChange={onSlideChange}
         >
           {SERVICOS_HERO_SLIDES.map((slide) => (
             <SwiperSlide key={slide.image}>
