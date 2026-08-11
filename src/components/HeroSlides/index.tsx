@@ -12,14 +12,17 @@ import 'swiper/css/pagination';
 
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { SERVICOS_HERO_SLIDES } from '@/lib/content';
-import { usePrefersReducedMotion } from '@/hooks/useMedia';
+import { useIsMobile, usePrefersReducedMotion } from '@/hooks/useMedia';
 
 const DURATION = 4000;
 const DURATION_REDUCED = 7000;
 
 export function HeroSlides() {
   const reduced = usePrefersReducedMotion();
+  const isMobile = useIsMobile();
   const [counter, setCounter] = useState(1);
+
+  const objectFit = isMobile ? 'contain' : 'cover';
 
   const autoplay = useMemo(
     () => ({
@@ -71,7 +74,7 @@ export function HeroSlides() {
                   sizes="100vw"
                   quality={82}
                   priority={slide.image === SERVICOS_HERO_SLIDES[0].image}
-                  style={{ objectFit: 'cover' }}
+                  style={{ objectFit }}
                 />
                 <Gradient />
                 <Label>{slide.title}</Label>
@@ -102,8 +105,10 @@ const Banner = styled.div`
   margin-top: ${({ theme }) => theme.spacing[48]};
 
   @media (max-width: 768px) {
-    height: 50vh;
-    min-height: 340px;
+    aspect-ratio: 3 / 2;
+    height: auto;
+    min-height: 0;
+    background: ${({ theme }) => theme.colors.verdePetroleoEscuro};
     margin-top: ${({ theme }) => theme.spacing[32]};
   }
 
@@ -180,6 +185,11 @@ const Label = styled.span`
   line-height: 1.18;
   color: ${({ theme }) => theme.colors.douradoClaro};
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+
+  @media (max-width: 768px) {
+    bottom: 40px;
+    font-size: clamp(1.15rem, 5vw, 1.7rem);
+  }
 `;
 
 const Counter = styled.span`
