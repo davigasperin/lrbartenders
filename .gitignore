@@ -32,6 +32,7 @@ next-env.d.ts
 
 # images duplicadas mantidas apenas como referência no repo raiz
 # (as usadas no site ficam em public/images/)
+/slides/
 
 # tooling e planejamento
 .opencode/

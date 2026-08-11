@@ -14,13 +14,11 @@ import 'swiper/css/pagination';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { SERVICOS_HERO_SLIDES } from '@/lib/content';
 import { usePrefersReducedMotion } from '@/hooks/useMedia';
-import { usePointerTilt } from '@/hooks/usePointerTilt';
 
 const DURATION = 4000;
 
 export function HeroSlides() {
   const reduced = usePrefersReducedMotion();
-  const tiltRef = usePointerTilt<HTMLElement>();
   const [counter, setCounter] = useState(1);
 
   return (
@@ -34,7 +32,8 @@ export function HeroSlides() {
         }
         subtitle="Clique em um serviço para conhecer tudo o que podemos fazer pelo seu evento."
       />
-      <Frame ref={tiltRef}>
+
+      <Banner>
         <Swiper
           modules={[A11y, Autoplay, EffectFade, Pagination]}
           effect="fade"
@@ -56,8 +55,9 @@ export function HeroSlides() {
                   src={slide.image}
                   alt=""
                   fill
-                  sizes="(max-width: 768px) 94vw, 600px"
+                  sizes="100vw"
                   quality={82}
+                  priority={slide.image === SERVICOS_HERO_SLIDES[0].image}
                   style={{ objectFit: 'cover' }}
                 />
                 <Gradient />
@@ -71,36 +71,27 @@ export function HeroSlides() {
           {String(counter).padStart(2, '0')} / {String(SERVICOS_HERO_SLIDES.length).padStart(2, '0')}
         </Counter>
         <Hint>Clique para ver os serviços</Hint>
-      </Frame>
+      </Banner>
     </SlidesSection>
   );
 }
 
 const SlidesSection = styled.section`
-  padding: 80px 0 96px;
+  padding: 80px 0 0;
   background: ${({ theme }) => theme.colors.fundo};
-  display: flex;
-  justify-content: center;
-
-  @media (max-width: 768px) {
-    padding: 56px 0 64px;
-  }
 `;
 
-const Frame = styled.figure`
+const Banner = styled.div`
   position: relative;
-  width: min(520px, 88vw);
-  aspect-ratio: 16 / 10;
-  border-radius: 20px;
+  width: 100%;
+  height: clamp(420px, 62vh, 640px);
   overflow: hidden;
-  border: 1px solid rgba(201, 162, 39, 0.55);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2),
-    0 24px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(201, 162, 39, 0.18);
-  will-change: transform;
+  margin-top: ${({ theme }) => theme.spacing[48]};
 
-  @media (max-width: 640px) {
-    width: 88vw;
-    aspect-ratio: 16 / 9;
+  @media (max-width: 768px) {
+    height: 50vh;
+    min-height: 340px;
+    margin-top: ${({ theme }) => theme.spacing[32]};
   }
 
   .swiper {
@@ -114,20 +105,21 @@ const Frame = styled.figure`
   }
 
   .swiper-pagination {
-    right: 14px;
-    left: auto;
-    bottom: 16px;
+    left: 24px;
+    right: auto;
+    bottom: 24px;
     width: auto;
     display: flex;
-    gap: 7px;
+    gap: 8px;
+    z-index: 3;
   }
 
   .swiper-pagination-bullet {
-    width: 9px;
-    height: 9px;
+    width: 28px;
+    height: 4px;
     margin: 0;
-    border-radius: 50%;
-    background: rgba(247, 243, 234, 0.4);
+    border-radius: 999px;
+    background: rgba(247, 243, 234, 0.45);
     opacity: 1;
     transition: background 0.3s ease, transform 0.3s ease;
   }
@@ -137,19 +129,7 @@ const Frame = styled.figure`
   }
 
   .swiper-pagination-bullet:hover {
-    transform: scale(1.3);
-  }
-
-  @media (max-width: 640px) {
-    .swiper-pagination {
-      bottom: 14px;
-      right: 12px;
-    }
-
-    .swiper-pagination-bullet {
-      width: 10px;
-      height: 10px;
-    }
+    transform: scaleX(1.15);
   }
 `;
 
@@ -170,47 +150,44 @@ const Gradient = styled.div`
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(3, 26, 29, 0.85) 0%,
-    rgba(3, 26, 29, 0.15) 45%,
-    rgba(3, 26, 29, 0.1) 100%
+    rgba(3, 26, 29, 0.9) 0%,
+    rgba(3, 26, 29, 0.35) 40%,
+    rgba(3, 26, 29, 0.15) 100%
   );
 `;
 
 const Label = styled.span`
   position: absolute;
-  left: 16px;
-  right: 72px;
-  bottom: 16px;
+  left: 24px;
+  right: 24px;
+  bottom: 68px;
+  max-width: 640px;
   font-family: ${({ theme }) => theme.fonts.serif};
-  font-size: clamp(1rem, 4vw, 1.25rem);
-  line-height: 1.25;
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  line-height: 1.18;
   color: ${({ theme }) => theme.colors.douradoClaro};
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
-
-  @media (max-width: 640px) {
-    right: 64px;
-    bottom: 14px;
-  }
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
 `;
 
 const Counter = styled.span`
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 20px;
+  right: 20px;
   z-index: 3;
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
-  color: rgba(247, 243, 234, 0.85);
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: rgba(247, 243, 234, 0.9);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
 `;
 
 const Hint = styled.span`
   position: absolute;
-  top: 14px;
-  left: 14px;
+  top: 20px;
+  left: 20px;
   z-index: 3;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(240, 215, 123, 0.9);
+  color: rgba(240, 215, 123, 0.95);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
 `;
