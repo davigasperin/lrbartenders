@@ -47,8 +47,7 @@ export function HeroSlides() {
             Nossos serviços em <em>destaque</em>
           </>
         }
-        subtitle="Clique em um serviço para conhecer tudo o que podemos fazer pelo seu evento."
-      />
+        />
 
       <Banner>
         <Swiper
@@ -77,7 +76,10 @@ export function HeroSlides() {
                   style={{ objectFit }}
                 />
                 <Gradient />
-                <Label>{slide.title}</Label>
+                <Label>
+                  <SlideTitle>{slide.title}</SlideTitle>
+                  <SlideTagline>{slide.tagline}</SlideTagline>
+                </Label>
               </SlideLink>
             </SwiperSlide>
           ))}
@@ -86,7 +88,6 @@ export function HeroSlides() {
         <Counter aria-hidden="true">
           {String(counter).padStart(2, '0')} / {String(SERVICOS_HERO_SLIDES.length).padStart(2, '0')}
         </Counter>
-        <Hint>Clique para ver os serviços</Hint>
       </Banner>
     </SlidesSection>
   );
@@ -178,17 +179,53 @@ const Label = styled.span`
   position: absolute;
   left: 24px;
   right: 24px;
-  bottom: 68px;
-  max-width: 640px;
+  bottom: 60px;
+  max-width: 680px;
   font-family: ${({ theme }) => theme.fonts.serif};
-  font-size: clamp(1.4rem, 4vw, 2.4rem);
-  line-height: 1.18;
-  color: ${({ theme }) => theme.colors.douradoClaro};
-  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
 
   @media (max-width: 768px) {
-    bottom: 40px;
-    font-size: clamp(1.15rem, 5vw, 1.7rem);
+    bottom: 32px;
+  }
+`;
+
+const SlideTitle = styled.span`
+  display: block;
+  text-transform: uppercase;
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: ${({ theme }) => theme.colors.douradoClaro};
+  background-image: linear-gradient(
+    100deg,
+    ${({ theme }) => theme.colors.dourado} 0%,
+    #f7e7b1 45%,
+    ${({ theme }) => theme.colors.douradoClaro} 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
+  filter: drop-shadow(0 2px 14px rgba(0, 0, 0, 0.4));
+
+  @media (max-width: 768px) {
+    font-size: clamp(1.6rem, 6.5vw, 2.4rem);
+  }
+`;
+
+const SlideTagline = styled.span`
+  display: block;
+  margin-top: 8px;
+  text-transform: uppercase;
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: rgba(247, 243, 234, 0.96);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
+
+  @media (max-width: 768px) {
+    font-size: clamp(0.85rem, 3.5vw, 1.05rem);
   }
 `;
 
@@ -200,17 +237,5 @@ const Counter = styled.span`
   font-size: 0.8rem;
   letter-spacing: 0.2em;
   color: rgba(247, 243, 234, 0.9);
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
-`;
-
-const Hint = styled.span`
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 3;
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(240, 215, 123, 0.95);
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
 `;

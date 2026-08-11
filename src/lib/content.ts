@@ -80,29 +80,39 @@ export const SERVICES: Service[] = [
   },
 ];
 
-export const SERVICOS_HERO_SLIDES: { title: string; image: string; href: string }[] = [
+export const SERVICOS_HERO_SLIDES: {
+  title: string;
+  tagline: string;
+  image: string;
+  href: string;
+}[] = [
   {
-    title: 'Coquetelaria Premium para eventos',
+    title: 'Coquetelaria',
+    tagline: 'premium para eventos',
     image: '/slides/coquetelaria-premium.jpg',
     href: '/servicos',
   },
   {
-    title: 'Bar de Café',
+    title: 'Bar',
+    tagline: 'de café',
     image: '/slides/bar-cafe.jpg',
     href: '/servicos',
   },
   {
-    title: 'Bar de Milk-shakes',
+    title: 'Bar',
+    tagline: 'de milk-shakes',
     image: '/slides/milk-shakes.jpg',
     href: '/servicos',
   },
   {
-    title: 'Cascata de Chocolate',
+    title: 'Cascata',
+    tagline: 'de chocolate',
     image: '/slides/cascata-chocolate.jpg',
     href: '/servicos',
   },
   {
-    title: 'Bar de Açaí',
+    title: 'Bar',
+    tagline: 'de açaí',
     image: '/slides/bar-acai.jpg',
     href: '/servicos',
   },
