@@ -7,7 +7,7 @@ import Link from 'next/link';
 import styled from 'styled-components';
 
 import { buttonBase, buttonSizes, buttonVariants } from '@/components/ui/Button';
-import { gsap } from '@/lib/gsap';
+import { gsap, SplitText } from '@/lib/gsap';
 import { SITE } from '@/lib/site';
 import { useIsMobile, usePrefersReducedMotion } from '@/hooks/useMedia';
 import { usePointerTilt } from '@/hooks/usePointerTilt';
@@ -32,18 +32,40 @@ function CanvasPlaceholder() {
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const splitRef = useRef<SplitText[] | null>(null);
   const isMobile = useIsMobile();
   const reduced = usePrefersReducedMotion();
-  const medallionTiltRef = usePointerTilt<HTMLElement>();
+  const titleTiltRef = usePointerTilt<HTMLHeadingElement>();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       if (reduced) {
         gsap.set('[data-hero-anim]', { autoAlpha: 1, y: 0 });
         gsap.set('[data-hero-image]', { autoAlpha: 1, y: 0, rotateY: 0 });
-        gsap.set('[data-hero-logo]', { autoAlpha: 1, y: 0, scale: 1 });
+        gsap.set('[data-hero-title]', { autoAlpha: 1, y: 0 });
         return;
       }
+
+      const split = gsap.utils
+        .toArray<HTMLElement>('[data-hero-title]')
+        .map((el) => new SplitText(el, { type: 'chars,words' }));
+
+      const chars = split.flatMap((s) => s.chars);
+
+      gsap.fromTo(chars,
+        { y: 70, autoAlpha: 0, rotateX: -40 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          rotateX: 0,
+          duration: 1,
+          ease: 'power3.out',
+          stagger: 0.035,
+          delay: 0.15,
+        },
+      );
+
+      splitRef.current = split;
 
       gsap.fromTo('[data-hero-anim]',
         { y: 40, autoAlpha: 0 },
@@ -69,18 +91,6 @@ export function Hero() {
         },
       );
 
-      gsap.fromTo('[data-hero-logo]',
-        { y: 30, autoAlpha: 0, scale: 0.92 },
-        {
-          y: 0,
-          autoAlpha: 1,
-          scale: 1,
-          duration: 1.1,
-          ease: 'power3.out',
-          delay: 0.15,
-        },
-      );
-
       gsap.to('[data-scroll-indicator]', {
         y: 12,
         autoAlpha: 0.25,
@@ -91,7 +101,10 @@ export function Hero() {
       });
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      splitRef.current?.forEach((s) => s.revert());
+      ctx.revert();
+    };
   }, [reduced]);
 
   return (
@@ -114,19 +127,10 @@ export function Hero() {
 
       <Content>
         <Eyebrow data-hero-anim>{SITE.tagline}</Eyebrow>
-        <HeroTitle data-hero-logo>
-          <Medallion ref={medallionTiltRef}>
-            <Image
-              src="/images/logo.jpeg"
-              alt="LR Bartenders"
-              width={1600}
-              height={1557}
-              priority
-              unoptimized
-              style={{ width: 'auto', height: 'clamp(150px, 30vh, 300px)' }}
-            />
-          </Medallion>
-        </HeroTitle>
+        <Title ref={titleTiltRef} data-hero-title>
+          <span>LR</span> <span>Bartenders</span>
+        </Title>
+        <Subtitle data-hero-anim>{SITE.slogan}</Subtitle>
         <Description data-hero-anim>
           Coquetelaria premium, cascata de chocolate, açaí, gin e muito mais
           para tornar o seu evento inesquecível.
@@ -264,33 +268,32 @@ const Eyebrow = styled.p`
   }
 `;
 
-const HeroTitle = styled.h1`
+const Title = styled.h1`
   margin: 0;
-  line-height: 1;
-  display: flex;
-  justify-content: center;
+  font-size: ${({ theme }) => theme.type.displayXl};
+  color: ${({ theme }) => theme.colors.texto};
+  text-transform: uppercase;
+  line-height: ${({ theme }) => theme.lineHeights.display};
+  perspective: 600px;
+  will-change: transform;
+
+  span {
+    display: inline-block;
+  }
+
+  span:last-child {
+    color: ${({ theme }) => theme.colors.douradoClaro};
+    font-family: ${({ theme }) => theme.fonts.serif};
+    font-style: italic;
+  }
 `;
 
-const Medallion = styled.figure`
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(0px, 1vw, 6px);
-  border-radius: 18px;
-  background: ${({ theme }) => theme.colors.verdePetroleoEscuro};
-  border: 1px solid rgba(201, 162, 39, 0.55);
-  box-shadow: 0 0 50px rgba(201, 162, 39, 0.25),
-    0 24px 60px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(0, 0, 0, 0.3);
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 8px;
-    border-radius: 12px;
-    border: 1px solid rgba(201, 162, 39, 0.3);
-    pointer-events: none;
-  }
+const Subtitle = styled.p`
+  margin-top: 16px;
+  font-family: ${({ theme }) => theme.fonts.serif};
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+  color: ${({ theme }) => theme.colors.dourado};
 `;
 
 const Description = styled.p`
