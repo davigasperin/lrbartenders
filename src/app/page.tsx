@@ -1,9 +1,9 @@
 'use client';
 
 import { Header } from '@/components/Header';
-import { TopBand } from '@/components/TopBand';
-import { HeroSlides } from '@/components/HeroSlides';
+import { Hero } from '@/components/Hero';
 import { About } from '@/components/About';
+import { HeroSlides } from '@/components/HeroSlides';
 import { Services } from '@/components/Services';
 import { MenuShowcase } from '@/components/MenuShowcase';
 import { Gallery } from '@/components/Gallery';
@@ -14,9 +14,9 @@ export default function Home() {
   return (
     <>
       <Header />
-      <TopBand />
-      <HeroSlides />
+      <Hero />
       <About />
+      <HeroSlides />
       <Services />
       <MenuShowcase />
       <Gallery />
