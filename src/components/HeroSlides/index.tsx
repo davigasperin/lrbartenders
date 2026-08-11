@@ -93,8 +93,12 @@ export function HeroSlides() {
 }
 
 const SlidesSection = styled.section`
-  padding: 80px 0 0;
+  padding: 72px 0 0;
   background: ${({ theme }) => theme.colors.fundo};
+
+  @media (max-width: 768px) {
+    padding: 56px 0 0;
+  }
 `;
 
 const Banner = styled.div`
