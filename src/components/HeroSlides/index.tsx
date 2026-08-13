@@ -10,19 +10,15 @@ import { A11y, Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-import { SectionTitle } from '@/components/ui/SectionTitle';
 import { SERVICOS_HERO_SLIDES } from '@/lib/content';
-import { useIsMobile, usePrefersReducedMotion } from '@/hooks/useMedia';
+import { usePrefersReducedMotion } from '@/hooks/useMedia';
 
 const DURATION = 4000;
 const DURATION_REDUCED = 7000;
 
 export function HeroSlides() {
   const reduced = usePrefersReducedMotion();
-  const isMobile = useIsMobile();
   const [counter, setCounter] = useState(1);
-
-  const objectFit = isMobile ? 'contain' : 'cover';
 
   const autoplay = useMemo(
     () => ({
@@ -40,15 +36,6 @@ export function HeroSlides() {
 
   return (
     <SlidesSection>
-      <SectionTitle
-        eyebrow="Serviços"
-        title={
-          <>
-            Nossos serviços em <em>destaque</em>
-          </>
-        }
-        />
-
       <Banner>
         <Swiper
           modules={[A11y, Autoplay, Pagination]}
@@ -73,7 +60,7 @@ export function HeroSlides() {
                   sizes="100vw"
                   quality={82}
                   priority={slide.image === SERVICOS_HERO_SLIDES[0].image}
-                  style={{ objectFit }}
+                  style={{ objectFit: 'contain' }}
                 />
                 <Gradient />
                 <Label>
@@ -94,23 +81,22 @@ export function HeroSlides() {
 }
 
 const SlidesSection = styled.section`
-  padding: 80px 0 0;
-  background: ${({ theme }) => theme.colors.fundo};
+  position: relative;
+  padding: 76px 0 0;
+  background: #000000;
 `;
 
 const Banner = styled.div`
   position: relative;
   width: 100%;
-  height: clamp(420px, 62vh, 640px);
+  height: calc(100vh - 76px);
+  height: calc(100svh - 76px);
   overflow: hidden;
-  margin-top: ${({ theme }) => theme.spacing[48]};
+  background: #000000;
 
   @media (max-width: 768px) {
-    aspect-ratio: 3 / 2;
-    height: auto;
-    min-height: 0;
-    background: ${({ theme }) => theme.colors.verdePetroleoEscuro};
-    margin-top: ${({ theme }) => theme.spacing[32]};
+    height: calc(100vh - 76px);
+    height: calc(100svh - 76px);
   }
 
   .swiper {
