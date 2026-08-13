@@ -1,13 +1,22 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
-import styled from 'styled-components';
+import { useEffect, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
 
 import { Field, Input, Select, Textarea } from '@/components/ui/Form';
 import { MENUS } from '@/lib/content';
 import { SITE, buildWhatsAppLink } from '@/lib/site';
 
 const EVENT_TYPES = ['Casamento', '15 Anos', 'Formatura', 'Corporativo', 'Aniversário', 'Festa Privada', 'Outro'];
+
+const FIELD_LABELS: Record<string, string> = {
+  nome: 'Nome completo',
+  telefone: 'Telefone',
+  tipo: 'Tipo de evento',
+  data: 'Data do evento',
+  convidados: 'Número de convidados',
+  local: 'Local do evento',
+};
 
 type BudgetData = {
   nome: string;
@@ -35,19 +44,30 @@ export function OrcamentoForm() {
   const [form, setForm] = useState<BudgetData>(initial);
   const [services, setServices] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
-  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [sent, setSent] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   const update = (key: keyof BudgetData, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
     if (errors[key]) {
-      setErrors((prev) => ({ ...prev, [key]: false }));
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
     }
   };
 
   const toggleService = (title: string) => {
     setServices((prev) => (prev.includes(title) ? prev.filter((s) => s !== title) : [...prev, title]));
   };
+
+  useEffect(() => {
+    if (Object.keys(errors).length === 0 && toastVisible) {
+      setToastVisible(false);
+    }
+  }, [errors, toastVisible]);
 
   if (sent) {
     return (
@@ -69,199 +89,265 @@ export function OrcamentoForm() {
   }
 
   return (
-    <Form
-      onSubmit={(e) => {
-        e.preventDefault();
-        setHasAttemptedSubmit(true);
-
-        const nextErrors: Record<string, boolean> = {};
-        if (!form.nome.trim()) nextErrors.nome = true;
-        if (!form.telefone.trim()) nextErrors.telefone = true;
-        if (!form.tipo) nextErrors.tipo = true;
-        if (!form.data) nextErrors.data = true;
-        if (!form.convidados.trim() || !Number.isFinite(Number(form.convidados)) || Number(form.convidados) <= 0) nextErrors.convidados = true;
-        if (!form.local.trim()) nextErrors.local = true;
-
-        if (Object.keys(nextErrors).length > 0) {
-          setErrors(nextErrors);
-          const firstErrorField = document.querySelector('[aria-invalid="true"], [data-invalid="true"]');
-          if (firstErrorField) {
-            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            (firstErrorField as HTMLElement).focus?.();
-          }
-          return;
-        }
-
-        const lines = [
-          '*Novo pedido de orçamento — LR Bartenders*',
-          '',
-          `*Nome:* ${form.nome.trim()}`,
-          `*Telefone/WhatsApp:* ${form.telefone.trim()}`,
-        ];
-
-        if (form.email.trim()) lines.push(`*E-mail:* ${form.email.trim()}`);
-        lines.push(
-          '',
-          `*Tipo de evento:* ${form.tipo}`,
-          `*Data do evento:* ${form.data}`,
-          `*Convidados:* ${form.convidados.trim()}`,
-          `*Local:* ${form.local.trim()}`,
-        );
-
-        if (services.length > 0) {
-          lines.push('', `*Serviços de interesse:* ${services.join(', ')}`);
-        }
-
-        if (form.mensagem.trim()) {
-          lines.push('', `*Mensagem:* ${form.mensagem.trim()}`);
-        }
-
-        lines.push('', `Enviado pelo site ${SITE.name}.`);
-        const whatsappUrl = buildWhatsAppLink(lines.join('\n'));
-        window.location.href = whatsappUrl;
-        setSent(true);
-      }}
-      noValidate
-    >
-      {hasAttemptedSubmit && Object.keys(errors).length > 0 && (
-        <FormAlert role="alert">
-          <AlertTitle>Atenção</AlertTitle>
-          <AlertText>Por favor, preencha todos os campos obrigatórios destacados em vermelho abaixo.</AlertText>
-        </FormAlert>
+    <>
+      {toastVisible && (
+        <Toast role="alert" aria-live="assertive">
+          <ToastIcon aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </ToastIcon>
+          <ToastContent>
+            <ToastTitle>Campos obrigatórios pendentes</ToastTitle>
+            <ToastMessage>{toastMessage}</ToastMessage>
+          </ToastContent>
+          <ToastClose type="button" aria-label="Fechar aviso" onClick={() => setToastVisible(false)}>
+            ×
+          </ToastClose>
+        </Toast>
       )}
-      <SectionTitle>Dados pessoais</SectionTitle>
-      <Grid>
-        <Field label="Nome completo" required error={errors.nome ? 'Informe seu nome.' : undefined}>
-          <Input
-            value={form.nome}
-            onChange={(e) => update('nome', e.target.value)}
-            placeholder="Seu nome"
-            $invalid={errors.nome}
-            aria-invalid={errors.nome}
-            data-invalid={errors.nome}
-          />
-        </Field>
-        <Field label="Telefone / WhatsApp" required error={errors.telefone ? 'Informe um telefone para contato.' : undefined}>
-          <Input
-            value={form.telefone}
-            onChange={(e) => update('telefone', e.target.value)}
-            placeholder="(19) 9 0000-0000"
-            $invalid={errors.telefone}
-            aria-invalid={errors.telefone}
-            data-invalid={errors.telefone}
-          />
-        </Field>
-        <Field label="E-mail">
-          <Input
-            type="email"
-            value={form.email}
-            onChange={(e) => update('email', e.target.value)}
-            placeholder="voce@email.com"
-          />
-        </Field>
-      </Grid>
 
-      <SectionTitle>Dados do evento</SectionTitle>
-      <Grid>
-        <Field label="Tipo de evento" required error={errors.tipo ? 'Escolha o tipo de evento.' : undefined}>
-          <Select
-            value={form.tipo}
-            onChange={(e) => update('tipo', e.target.value)}
-            $invalid={errors.tipo}
-            aria-invalid={errors.tipo}
-            data-invalid={errors.tipo}
-          >
-            <option value="">Selecione…</option>
-            {EVENT_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </Select>
-        </Field>
-        <Field label="Data do evento" required error={errors.data ? 'Informe a data do evento.' : undefined}>
-          <Input
-            type="date"
-            value={form.data}
-            onChange={(e) => update('data', e.target.value)}
-            $invalid={errors.data}
-            aria-invalid={errors.data}
-            data-invalid={errors.data}
-          />
-        </Field>
-        <Field label="Número de convidados" required error={errors.convidados ? 'Informe a quantidade de convidados.' : undefined}>
-          <Input
-            type="number"
-            min={1}
-            inputMode="numeric"
-            value={form.convidados}
-            onChange={(e) => update('convidados', e.target.value)}
-            placeholder="Ex.: 150"
-            $invalid={errors.convidados}
-            aria-invalid={errors.convidados}
-            data-invalid={errors.convidados}
-          />
-        </Field>
-        <Field label="Local do evento" required error={errors.local ? 'Informe o local do evento.' : undefined}>
-          <Input
-            value={form.local}
-            onChange={(e) => update('local', e.target.value)}
-            placeholder="Cidade / local"
-            $invalid={errors.local}
-            aria-invalid={errors.local}
-            data-invalid={errors.local}
-          />
-        </Field>
-      </Grid>
+      <Form
+        onSubmit={(e) => {
+          e.preventDefault();
 
-      <SectionTitle>Serviços de interesse</SectionTitle>
-      <Chips>
-        {MENUS.map((menu) => {
-          const active = services.includes(menu.title);
-          return (
-            <Chip key={menu.id} type="button" $active={active} aria-pressed={active} onClick={() => toggleService(menu.title)}>
-              {menu.title}
-            </Chip>
+          const nextErrors: Record<string, boolean> = {};
+          if (!form.nome.trim()) nextErrors.nome = true;
+          if (!form.telefone.trim()) nextErrors.telefone = true;
+          if (!form.tipo) nextErrors.tipo = true;
+          if (!form.data) nextErrors.data = true;
+          if (!form.convidados.trim() || !Number.isFinite(Number(form.convidados)) || Number(form.convidados) <= 0) nextErrors.convidados = true;
+          if (!form.local.trim()) nextErrors.local = true;
+
+          if (Object.keys(nextErrors).length > 0) {
+            setErrors(nextErrors);
+            const missing = Object.keys(nextErrors).map((k) => FIELD_LABELS[k] || k).join(', ');
+            setToastMessage(`Preencha: ${missing}.`);
+            setToastVisible(true);
+
+            requestAnimationFrame(() => {
+              const firstErrorField = document.querySelector('[aria-invalid="true"]') as HTMLElement | null;
+              if (firstErrorField) {
+                firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstErrorField.focus({ preventScroll: true });
+              }
+            });
+            return;
+          }
+
+          setToastVisible(false);
+
+          const lines = [
+            '*Novo pedido de orçamento — LR Bartenders*',
+            '',
+            `*Nome:* ${form.nome.trim()}`,
+            `*Telefone/WhatsApp:* ${form.telefone.trim()}`,
+          ];
+
+          if (form.email.trim()) lines.push(`*E-mail:* ${form.email.trim()}`);
+          lines.push(
+            '',
+            `*Tipo de evento:* ${form.tipo}`,
+            `*Data do evento:* ${form.data}`,
+            `*Convidados:* ${form.convidados.trim()}`,
+            `*Local:* ${form.local.trim()}`,
           );
-        })}
-      </Chips>
 
-      <SectionTitle>Detalhes</SectionTitle>
-      <Field label="Conte mais sobre o evento">
-        <Textarea
-          value={form.mensagem}
-          onChange={(e) => update('mensagem', e.target.value)}
-          placeholder="Conte um pouco sobre a ocasião, preferências de drinks, horários…"
-        />
-      </Field>
+          if (services.length > 0) {
+            lines.push('', `*Serviços de interesse:* ${services.join(', ')}`);
+          }
 
-      <Submit type="submit">
-        Enviar via WhatsApp
-      </Submit>
-      <Privacy>Seus dados são usados apenas para atender seu pedido de orçamento.</Privacy>
-    </Form>
+          if (form.mensagem.trim()) {
+            lines.push('', `*Mensagem:* ${form.mensagem.trim()}`);
+          }
+
+          lines.push('', `Enviado pelo site ${SITE.name}.`);
+          const whatsappUrl = buildWhatsAppLink(lines.join('\n'));
+          window.location.href = whatsappUrl;
+          setSent(true);
+        }}
+        noValidate
+      >
+        <SectionTitle>Dados pessoais</SectionTitle>
+        <Grid>
+          <Field label="Nome completo" required error={errors.nome ? 'Informe seu nome.' : undefined}>
+            <Input
+              value={form.nome}
+              onChange={(e) => update('nome', e.target.value)}
+              placeholder="Seu nome"
+              $invalid={errors.nome}
+              aria-invalid={!!errors.nome}
+            />
+          </Field>
+          <Field label="Telefone / WhatsApp" required error={errors.telefone ? 'Informe um telefone para contato.' : undefined}>
+            <Input
+              value={form.telefone}
+              onChange={(e) => update('telefone', e.target.value)}
+              placeholder="(19) 9 0000-0000"
+              $invalid={errors.telefone}
+              aria-invalid={!!errors.telefone}
+            />
+          </Field>
+          <Field label="E-mail">
+            <Input
+              type="email"
+              value={form.email}
+              onChange={(e) => update('email', e.target.value)}
+              placeholder="voce@email.com"
+            />
+          </Field>
+        </Grid>
+
+        <SectionTitle>Dados do evento</SectionTitle>
+        <Grid>
+          <Field label="Tipo de evento" required error={errors.tipo ? 'Escolha o tipo de evento.' : undefined}>
+            <Select
+              value={form.tipo}
+              onChange={(e) => update('tipo', e.target.value)}
+              $invalid={errors.tipo}
+              aria-invalid={!!errors.tipo}
+            >
+              <option value="">Selecione…</option>
+              {EVENT_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <Field label="Data do evento" required error={errors.data ? 'Informe a data do evento.' : undefined}>
+            <Input
+              type="date"
+              value={form.data}
+              onChange={(e) => update('data', e.target.value)}
+              $invalid={errors.data}
+              aria-invalid={!!errors.data}
+            />
+          </Field>
+          <Field label="Número de convidados" required error={errors.convidados ? 'Informe a quantidade de convidados.' : undefined}>
+            <Input
+              type="number"
+              min={1}
+              inputMode="numeric"
+              value={form.convidados}
+              onChange={(e) => update('convidados', e.target.value)}
+              placeholder="Ex.: 150"
+              $invalid={errors.convidados}
+              aria-invalid={!!errors.convidados}
+            />
+          </Field>
+          <Field label="Local do evento" required error={errors.local ? 'Informe o local do evento.' : undefined}>
+            <Input
+              value={form.local}
+              onChange={(e) => update('local', e.target.value)}
+              placeholder="Cidade / local"
+              $invalid={errors.local}
+              aria-invalid={!!errors.local}
+            />
+          </Field>
+        </Grid>
+
+        <SectionTitle>Serviços de interesse</SectionTitle>
+        <Chips>
+          {MENUS.map((menu) => {
+            const active = services.includes(menu.title);
+            return (
+              <Chip key={menu.id} type="button" $active={active} aria-pressed={active} onClick={() => toggleService(menu.title)}>
+                {menu.title}
+              </Chip>
+            );
+          })}
+        </Chips>
+
+        <SectionTitle>Detalhes</SectionTitle>
+        <Field label="Conte mais sobre o evento">
+          <Textarea
+            value={form.mensagem}
+            onChange={(e) => update('mensagem', e.target.value)}
+            placeholder="Conte um pouco sobre a ocasião, preferências de drinks, horários…"
+          />
+        </Field>
+
+        <Submit type="submit">Enviar via WhatsApp</Submit>
+        <Privacy>Seus dados são usados apenas para atender seu pedido de orçamento.</Privacy>
+      </Form>
+    </>
   );
 }
 
-const FormAlert = styled.div`
-  padding: 16px 20px;
+const slideIn = keyframes`
+  from { opacity: 0; transform: translate(-50%, -20px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+`;
+
+const Toast = styled.div`
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 320px;
+  max-width: calc(100vw - 32px);
+  padding: 14px 16px;
   border-radius: 12px;
-  background: rgba(180, 40, 40, 0.15);
-  border: 1px solid rgba(220, 50, 50, 0.4);
-  color: ${({ theme }) => theme.colors.errorLight || '#ff9999'};
-  margin-bottom: 8px;
+  background: linear-gradient(135deg, rgba(140, 30, 30, 0.96), rgba(110, 20, 20, 0.96));
+  border: 1px solid rgba(255, 120, 120, 0.6);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.2);
+  color: #fff5f5;
+  font-family: ${({ theme }) => theme.fonts.sans};
+
+  animation: ${slideIn} 0.28s ease-out;
 `;
 
-const AlertTitle = styled.h4`
-  font-family: ${({ theme }) => theme.fonts.serif};
-  font-size: 1.05rem;
-  margin-bottom: 4px;
-  color: #ffcccc;
+const ToastIcon = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffb3b3;
+  flex-shrink: 0;
+  padding-top: 2px;
 `;
 
-const AlertText = styled.p`
-  font-size: 0.9rem;
-  line-height: 1.4;
+const ToastContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+`;
+
+const ToastTitle = styled.strong`
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+`;
+
+const ToastMessage = styled.span`
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: #ffd9d9;
+`;
+
+const ToastClose = styled.button`
+  background: transparent;
+  border: none;
+  color: #ffd9d9;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  flex-shrink: 0;
+  align-self: flex-start;
+
+  &:hover {
+    color: #ffffff;
+  }
 `;
 
 const Form = styled.form`
