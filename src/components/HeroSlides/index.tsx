@@ -11,13 +11,14 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 import { SERVICOS_HERO_SLIDES } from '@/lib/content';
-import { usePrefersReducedMotion } from '@/hooks/useMedia';
+import { useIsMobile, usePrefersReducedMotion } from '@/hooks/useMedia';
 
 const DURATION = 4000;
 const DURATION_REDUCED = 7000;
 
 export function HeroSlides() {
   const reduced = usePrefersReducedMotion();
+  const isMobile = useIsMobile();
   const [counter, setCounter] = useState(1);
 
   const autoplay = useMemo(
@@ -60,7 +61,7 @@ export function HeroSlides() {
                   sizes="100vw"
                   quality={82}
                   priority={slide.image === SERVICOS_HERO_SLIDES[0].image}
-                  style={{ objectFit: 'contain' }}
+                  style={{ objectFit: isMobile ? 'cover' : 'contain' }}
                 />
                 <Gradient />
                 <Label>
