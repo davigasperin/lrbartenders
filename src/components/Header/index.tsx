@@ -89,75 +89,65 @@ export function Header() {
   return (
     <>
       <HeaderBar ref={headerRef}>
-        <Container>
-          <Brand href="/" aria-label={`${SITE.name} — home`}>
-            <Logo />
-          </Brand>
+      <Container>
+        <div /> {/* Espaço vazio para manter logo centralizado via flex */}
+        <Brand href="/" aria-label={`${SITE.name} — home`}>
+          <Logo />
+        </Brand>
 
-          <Nav aria-label="Navegação principal">
-            {NAV_LINKS.map((link) => (
-              <NavLink
-                key={link.href}
-                href={link.href}
-                $active={pathname === link.href}
-                aria-current={pathname === link.href ? 'page' : undefined}
-              >
-                {link.label}
-              </NavLink>
-            ))}
-          </Nav>
-
-          <Actions>
-            <Cta href="/orcamento">Solicitar Orçamento</Cta>
-            <Burger
-              ref={burgerRef}
-              aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
-              aria-expanded={menuOpen}
-              $open={menuOpen}
-              onClick={() => toggleMenu()}
-            >
-              <span />
-              <span />
-              <span />
-            </Burger>
-          </Actions>
-        </Container>
-      </HeaderBar>
-
-      <DrawerOverlay ref={overlayRef} $open={menuOpen} onClick={() => toggleMenu(false)} />
-
-      <Drawer ref={drawerRef} $open={menuOpen} role="dialog" aria-modal="true" aria-label="Menu">
-        <DrawerTop $open={menuOpen}>
-          <Link href="/" onClick={() => toggleMenu(false)} aria-label="LR Bartenders">
-            <Logo size={44} />
-          </Link>
-          <CloseButton onClick={() => toggleMenu(false)} aria-label="Fechar menu">
+        <Actions>
+          <Burger
+            ref={burgerRef}
+            aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={menuOpen}
+            $open={menuOpen}
+            onClick={() => toggleMenu()}
+          >
             <span />
             <span />
-          </CloseButton>
-        </DrawerTop>
+            <span />
+          </Burger>
+        </Actions>
+      </Container>
+    </HeaderBar>
 
-        <DrawerNav>
-          {NAV_LINKS.map((link, index) => (
-            <DrawerLink
-              key={link.href}
-              href={link.href}
-              $active={pathname === link.href}
-              $open={menuOpen}
-              $delay={0.18 + index * 0.06}
-              aria-current={pathname === link.href ? 'page' : undefined}
-              onClick={() => toggleMenu(false)}
-            >
-              <Number>0{index + 1}</Number>
-              {link.label}
-            </DrawerLink>
-          ))}
-        </DrawerNav>
+    <DrawerOverlay ref={overlayRef} $open={menuOpen} onClick={() => toggleMenu(false)} />
 
-        <DrawerCta href="/orcamento" $open={menuOpen} onClick={() => toggleMenu(false)}>
-          Solicitar Orçamento
-        </DrawerCta>
-      </Drawer>
+    <Drawer ref={drawerRef} $open={menuOpen} role="dialog" aria-modal="true" aria-label="Menu">
+      <DrawerTop $open={menuOpen}>
+        <Link href="/" onClick={() => toggleMenu(false)} aria-label="LR Bartenders">
+          <Logo size={44} />
+        </Link>
+        <CloseButton onClick={() => toggleMenu(false)} aria-label="Fechar menu">
+          <span />
+          <span />
+        </CloseButton>
+      </DrawerTop>
+
+      <DrawerNav>
+        {NAV_LINKS.map((link, index) => (
+          <DrawerLink
+            key={link.href}
+            href={link.href}
+            $active={pathname === link.href}
+            $open={menuOpen}
+            $delay={0.18 + index * 0.06}
+            aria-current={pathname === link.href ? 'page' : undefined}
+            onClick={() => toggleMenu(false)}
+          >
+            <Number>0{index + 1}</Number>
+            {link.label}
+          </DrawerLink>
+        ))}
+      </DrawerNav>
+
+      <DrawerCta href="/orcamento" $open={menuOpen} onClick={() => toggleMenu(false)}>
+        Solicitar Orçamento
+      </DrawerCta>
+    </Drawer>
+
+    {/* Destaque visual para a faixa preta de branding */}
+    <BrandingBar />
     </>
   );
 }
@@ -167,31 +157,37 @@ const HeaderBar = styled.header`
   top: 0;
   left: 0;
   right: 0;
+  height: 76px;
   z-index: ${({ theme }) => theme.zIndex.header};
-  background: transparent;
-  transition: background-color 0.4s ease, backdrop-filter 0.4s ease,
-    box-shadow 0.4s ease;
+  background: #000000;
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
 
   &.is-scrolled {
-    background-color: rgba(3, 26, 29, 0.86);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background-color: #000000;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35);
   }
 `;
 
+const BrandingBar = styled.div`
+  display: none;
+`;
+
 const Container = styled.div`
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
-  height: 84px;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  position: relative;
 `;
 
 const Brand = styled(Link)`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: inline-flex;
   align-items: center;
   cursor: pointer;
