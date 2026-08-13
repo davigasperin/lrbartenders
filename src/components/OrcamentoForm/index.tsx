@@ -8,8 +8,6 @@ import { MENUS } from '@/lib/content';
 import { SITE, buildWhatsAppLink } from '@/lib/site';
 
 const EVENT_TYPES = ['Casamento', '15 Anos', 'Formatura', 'Corporativo', 'Aniversário', 'Festa Privada', 'Outro'];
-const GUEST_RANGES = ['Até 50', '51 a 100', '101 a 200', '201 a 300', 'Mais de 300'];
-const BUDGET_RANGES = ['Até R$ 3.000', 'R$ 3.000 a R$ 6.000', 'R$ 6.000 a R$ 12.000', 'Acima de R$ 12.000', 'Ainda não sei'];
 
 type BudgetData = {
   nome: string;
@@ -19,7 +17,6 @@ type BudgetData = {
   data: string;
   convidados: string;
   local: string;
-  orcamento: string;
   mensagem: string;
 };
 
@@ -31,7 +28,6 @@ const initial: BudgetData = {
   data: '',
   convidados: '',
   local: '',
-  orcamento: '',
   mensagem: '',
 };
 
@@ -39,6 +35,7 @@ export function OrcamentoForm() {
   const [form, setForm] = useState<BudgetData>(initial);
   const [services, setServices] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [sent, setSent] = useState(false);
 
   const update = (key: keyof BudgetData, value: string) => {
@@ -50,51 +47,6 @@ export function OrcamentoForm() {
 
   const toggleService = (title: string) => {
     setServices((prev) => (prev.includes(title) ? prev.filter((s) => s !== title) : [...prev, title]));
-  };
-
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-
-    const nextErrors: Record<string, boolean> = {};
-    if (!form.nome.trim()) nextErrors.nome = true;
-    if (!form.telefone.trim()) nextErrors.telefone = true;
-    if (!form.tipo) nextErrors.tipo = true;
-    if (!form.data) nextErrors.data = true;
-    if (!form.convidados) nextErrors.convidados = true;
-
-    if (Object.keys(nextErrors).length > 0) {
-      setErrors(nextErrors);
-      return;
-    }
-
-    const lines = [
-      '*Novo pedido de orçamento — LR Bartenders*',
-      '',
-      `*Nome:* ${form.nome.trim()}`,
-      `*Telefone/WhatsApp:* ${form.telefone.trim()}`,
-    ];
-
-    if (form.email.trim()) lines.push(`*E-mail:* ${form.email.trim()}`);
-    lines.push(
-      '',
-      `*Tipo de evento:* ${form.tipo}`,
-      `*Data do evento:* ${form.data}`,
-      `*Convidados:* ${form.convidados}`,
-      `*Local:* ${form.local.trim() || 'A definir'}`,
-      `*Orçamento estimado:* ${form.orcamento || 'A definir'}`,
-    );
-
-    if (services.length > 0) {
-      lines.push('', `*Serviços de interesse:* ${services.join(', ')}`);
-    }
-
-    if (form.mensagem.trim()) {
-      lines.push('', `*Mensagem:* ${form.mensagem.trim()}`);
-    }
-
-    lines.push('', `Enviado pelo site ${SITE.name}.`);
-    window.open(buildWhatsAppLink(lines.join('\n')), '_blank', 'noopener,noreferrer');
-    setSent(true);
   };
 
   if (sent) {
@@ -117,7 +69,66 @@ export function OrcamentoForm() {
   }
 
   return (
-    <Form onSubmit={handleSubmit} noValidate>
+    <Form
+      onSubmit={(e) => {
+        e.preventDefault();
+        setHasAttemptedSubmit(true);
+
+        const nextErrors: Record<string, boolean> = {};
+        if (!form.nome.trim()) nextErrors.nome = true;
+        if (!form.telefone.trim()) nextErrors.telefone = true;
+        if (!form.tipo) nextErrors.tipo = true;
+        if (!form.data) nextErrors.data = true;
+        if (!form.convidados.trim() || !Number.isFinite(Number(form.convidados)) || Number(form.convidados) <= 0) nextErrors.convidados = true;
+        if (!form.local.trim()) nextErrors.local = true;
+
+        if (Object.keys(nextErrors).length > 0) {
+          setErrors(nextErrors);
+          const firstErrorField = document.querySelector('[aria-invalid="true"], [data-invalid="true"]');
+          if (firstErrorField) {
+            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            (firstErrorField as HTMLElement).focus?.();
+          }
+          return;
+        }
+
+        const lines = [
+          '*Novo pedido de orçamento — LR Bartenders*',
+          '',
+          `*Nome:* ${form.nome.trim()}`,
+          `*Telefone/WhatsApp:* ${form.telefone.trim()}`,
+        ];
+
+        if (form.email.trim()) lines.push(`*E-mail:* ${form.email.trim()}`);
+        lines.push(
+          '',
+          `*Tipo de evento:* ${form.tipo}`,
+          `*Data do evento:* ${form.data}`,
+          `*Convidados:* ${form.convidados.trim()}`,
+          `*Local:* ${form.local.trim()}`,
+        );
+
+        if (services.length > 0) {
+          lines.push('', `*Serviços de interesse:* ${services.join(', ')}`);
+        }
+
+        if (form.mensagem.trim()) {
+          lines.push('', `*Mensagem:* ${form.mensagem.trim()}`);
+        }
+
+        lines.push('', `Enviado pelo site ${SITE.name}.`);
+        const whatsappUrl = buildWhatsAppLink(lines.join('\n'));
+        window.location.href = whatsappUrl;
+        setSent(true);
+      }}
+      noValidate
+    >
+      {hasAttemptedSubmit && Object.keys(errors).length > 0 && (
+        <FormAlert role="alert">
+          <AlertTitle>Atenção</AlertTitle>
+          <AlertText>Por favor, preencha todos os campos obrigatórios destacados em vermelho abaixo.</AlertText>
+        </FormAlert>
+      )}
       <SectionTitle>Dados pessoais</SectionTitle>
       <Grid>
         <Field label="Nome completo" required error={errors.nome ? 'Informe seu nome.' : undefined}>
@@ -126,6 +137,8 @@ export function OrcamentoForm() {
             onChange={(e) => update('nome', e.target.value)}
             placeholder="Seu nome"
             $invalid={errors.nome}
+            aria-invalid={errors.nome}
+            data-invalid={errors.nome}
           />
         </Field>
         <Field label="Telefone / WhatsApp" required error={errors.telefone ? 'Informe um telefone para contato.' : undefined}>
@@ -134,6 +147,8 @@ export function OrcamentoForm() {
             onChange={(e) => update('telefone', e.target.value)}
             placeholder="(19) 9 0000-0000"
             $invalid={errors.telefone}
+            aria-invalid={errors.telefone}
+            data-invalid={errors.telefone}
           />
         </Field>
         <Field label="E-mail">
@@ -149,7 +164,13 @@ export function OrcamentoForm() {
       <SectionTitle>Dados do evento</SectionTitle>
       <Grid>
         <Field label="Tipo de evento" required error={errors.tipo ? 'Escolha o tipo de evento.' : undefined}>
-          <Select value={form.tipo} onChange={(e) => update('tipo', e.target.value)} $invalid={errors.tipo}>
+          <Select
+            value={form.tipo}
+            onChange={(e) => update('tipo', e.target.value)}
+            $invalid={errors.tipo}
+            aria-invalid={errors.tipo}
+            data-invalid={errors.tipo}
+          >
             <option value="">Selecione…</option>
             {EVENT_TYPES.map((t) => (
               <option key={t} value={t}>
@@ -159,34 +180,37 @@ export function OrcamentoForm() {
           </Select>
         </Field>
         <Field label="Data do evento" required error={errors.data ? 'Informe a data do evento.' : undefined}>
-          <Input type="date" value={form.data} onChange={(e) => update('data', e.target.value)} $invalid={errors.data} />
+          <Input
+            type="date"
+            value={form.data}
+            onChange={(e) => update('data', e.target.value)}
+            $invalid={errors.data}
+            aria-invalid={errors.data}
+            data-invalid={errors.data}
+          />
         </Field>
-        <Field label="Número de convidados" required error={errors.convidados ? 'Informe o número de convidados.' : undefined}>
-          <Select value={form.convidados} onChange={(e) => update('convidados', e.target.value)} $invalid={errors.convidados}>
-            <option value="">Selecione…</option>
-            {GUEST_RANGES.map((g) => (
-              <option key={g} value={g}>
-                {g}
-              </option>
-            ))}
-          </Select>
+        <Field label="Número de convidados" required error={errors.convidados ? 'Informe a quantidade de convidados.' : undefined}>
+          <Input
+            type="number"
+            min={1}
+            inputMode="numeric"
+            value={form.convidados}
+            onChange={(e) => update('convidados', e.target.value)}
+            placeholder="Ex.: 150"
+            $invalid={errors.convidados}
+            aria-invalid={errors.convidados}
+            data-invalid={errors.convidados}
+          />
         </Field>
-        <Field label="Local do evento">
+        <Field label="Local do evento" required error={errors.local ? 'Informe o local do evento.' : undefined}>
           <Input
             value={form.local}
             onChange={(e) => update('local', e.target.value)}
             placeholder="Cidade / local"
+            $invalid={errors.local}
+            aria-invalid={errors.local}
+            data-invalid={errors.local}
           />
-        </Field>
-        <Field label="Orçamento estimado">
-          <Select value={form.orcamento} onChange={(e) => update('orcamento', e.target.value)}>
-            <option value="">Selecione…</option>
-            {BUDGET_RANGES.map((b) => (
-              <option key={b} value={b}>
-                {b}
-              </option>
-            ))}
-          </Select>
         </Field>
       </Grid>
 
@@ -211,11 +235,34 @@ export function OrcamentoForm() {
         />
       </Field>
 
-      <Submit type="submit">Enviar via WhatsApp</Submit>
+      <Submit type="submit">
+        Enviar via WhatsApp
+      </Submit>
       <Privacy>Seus dados são usados apenas para atender seu pedido de orçamento.</Privacy>
     </Form>
   );
 }
+
+const FormAlert = styled.div`
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: rgba(180, 40, 40, 0.15);
+  border: 1px solid rgba(220, 50, 50, 0.4);
+  color: ${({ theme }) => theme.colors.errorLight || '#ff9999'};
+  margin-bottom: 8px;
+`;
+
+const AlertTitle = styled.h4`
+  font-family: ${({ theme }) => theme.fonts.serif};
+  font-size: 1.05rem;
+  margin-bottom: 4px;
+  color: #ffcccc;
+`;
+
+const AlertText = styled.p`
+  font-size: 0.9rem;
+  line-height: 1.4;
+`;
 
 const Form = styled.form`
   display: flex;
