@@ -16,7 +16,7 @@ export type Menu = {
 
 export const ABOUT = {
   title: 'Coquetelaria Premium de outro nível',
-  lead: 'Somos um serviço sofisticado e versátil associado a uma Coquetelaria Premium apresentada de forma clássica ou interativa.',
+  lead: 'Do brinde de boas-vindas ao último gole, cada detalhe pensado para encantar os sentidos.',
   paragraphs: [
     'Criada em 2012, a LR Bartenders é referência em festas e eventos em Campinas e no interior paulista. Nossos bartenders são altamente capacitados, corteses e profissionais, prontos para interagir com o público e eternizar momentos inesquecíveis.',
     'Com uma variada carta de drinks e os principais cocktails — internacionais, caipirinhas clássicas e gourmet, além de mixologia molecular — nosso objetivo é estimular os sentidos de cada convidado, oferecendo uma experiência sensorial inigualável.',

@@ -16,15 +16,15 @@ type PageHeroProps = {
 
 const Section = styled.section`
   position: relative;
-  min-height: 56vh;
+  min-height: 40vh;
   display: flex;
   align-items: flex-end;
-  padding: 11rem 1.5rem 4rem;
+  padding: 6rem 1.5rem 3rem;
   overflow: hidden;
 
   @media (max-width: 768px) {
-    min-height: 48vh;
-    padding-top: 9rem;
+    min-height: 35vh;
+    padding-top: 5rem;
   }
 `;
 

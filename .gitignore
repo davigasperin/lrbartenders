@@ -38,6 +38,7 @@ next-env.d.ts
 .opencode/
 .planning/
 design-system/
+.impeccable/
 AGENTS.md
 
 # arquivos locais

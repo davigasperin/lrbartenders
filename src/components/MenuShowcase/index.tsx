@@ -24,7 +24,11 @@ export function MenuShowcase() {
         return;
       }
 
-      const getAmount = () => track.scrollWidth - window.innerWidth;
+      const getAmount = () => {
+        const section = sectionRef.current;
+        if (!section) return 0;
+        return track.scrollWidth - section.offsetWidth;
+      };
 
       gsap.to(track, {
         x: () => -getAmount(),

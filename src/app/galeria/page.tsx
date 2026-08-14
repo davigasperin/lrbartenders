@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 
-import { Header } from '@/components/Header';
 import { PageHero } from '@/components/PageHero';
 import { Gallery } from '@/components/Gallery';
 import { CTASection } from '@/components/CTASection';
@@ -16,17 +15,14 @@ export const metadata: Metadata = {
 export default function GaleriaPage() {
   return (
     <>
-      <Header />
-      <main>
-        <PageHero
-          eyebrow="Galeria"
-          title="Momentos que já fizemos acontecer"
-          subtitle="Um olhar por dentro dos eventos que marcaram a história da LR Bartenders."
-          background="/images/topo-site-04.jpg"
-        />
-        <Gallery />
-        <CTASection />
-      </main>
+      <PageHero
+        eyebrow="Galeria"
+        title="Momentos que já fizemos acontecer"
+        subtitle="Um olhar por dentro dos eventos que marcaram a história da LR Bartenders."
+        background="/images/topo-site-04.jpg"
+      />
+      <Gallery />
+      <CTASection />
       <Footer />
     </>
   );

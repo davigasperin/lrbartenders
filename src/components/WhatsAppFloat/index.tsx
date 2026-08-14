@@ -1,3 +1,5 @@
+﻿'use client';
+
 import styled from 'styled-components';
 import { SITE, buildWhatsAppLink } from '@/lib/site';
 
@@ -27,15 +29,24 @@ const Float = styled.a`
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  color: #fff;
-  background-color: #25d366;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  color: ${({ theme }) => theme.colors.verdePetroleoEscuro};
+  background: linear-gradient(
+    135deg,
+    ${({ theme }) => theme.colors.douradoClaro} 0%,
+    ${({ theme }) => theme.colors.dourado} 60%,
+    ${({ theme }) => theme.colors.douradoEscuro} 100%
+  );
+  box-shadow: ${({ theme }) => theme.shadows.gold};
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
-    background-color: #20ba5a;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: ${({ theme }) => theme.shadows.goldStrong};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.douradoClaro};
+    outline-offset: 4px;
   }
 
   @media (prefers-reduced-motion: no-preference) {

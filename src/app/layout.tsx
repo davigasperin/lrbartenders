@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import { Playfair_Display, Inter } from 'next/font/google';
+import styled from 'styled-components';
 
 import StyledComponentsRegistry from '@/lib/registry';
 import { ThemeProvider } from '@/lib/theme-provider';
 import { SITE } from '@/lib/site';
 import { WhatsAppFloat } from '@/components/WhatsAppFloat';
+import { Sidebar } from '@/components/Sidebar';
 
 const serif = Playfair_Display({
   subsets: ['latin'],
@@ -51,6 +53,21 @@ export const metadata: Metadata = {
   },
 };
 
+const AppWrapper = styled.div`
+  min-height: 100vh;
+  position: relative;
+`;
+
+const MainContent = styled.main`
+  position: relative;
+  width: 100%;
+
+  @media (min-width: 1025px) {
+    margin-left: 280px;
+    width: auto;
+  }
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -62,7 +79,10 @@ export default function RootLayout({
         <a className="skip-link" href="#main-content">Pular para o conteúdo</a>
         <StyledComponentsRegistry>
           <ThemeProvider>
-            <main id="main-content">{children}</main>
+            <AppWrapper>
+              <Sidebar />
+              <MainContent id="main-content">{children}</MainContent>
+            </AppWrapper>
             <WhatsAppFloat />
           </ThemeProvider>
         </StyledComponentsRegistry>

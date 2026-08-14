@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 
-import { Header } from '@/components/Header';
 import { PageHero } from '@/components/PageHero';
 import { FormLayout, FormCard } from '@/components/FormLayout';
 import { OrcamentoForm } from '@/components/OrcamentoForm';
@@ -17,21 +16,18 @@ export const metadata: Metadata = {
 export default function OrcamentoPage() {
   return (
     <>
-      <Header />
-      <main>
-        <PageHero
-          eyebrow="Orçamento"
-          title="Vamos transformar a sua festa?"
-          subtitle="Preencha o formulário abaixo e receba um orçamento personalizado. Respondemos rapidamente pelo WhatsApp."
-          background="/images/topo-site-02.jpg"
-        />
-        <FormLayout>
-          <FormCard>
-            <OrcamentoForm />
-          </FormCard>
-          <ContactInfo />
-        </FormLayout>
-      </main>
+      <PageHero
+        eyebrow="Orçamento"
+        title="Vamos transformar a sua festa?"
+        subtitle="Preencha o formulário abaixo e receba um orçamento personalizado. Respondemos rapidamente pelo WhatsApp."
+        background="/images/topo-site-02.jpg"
+      />
+      <FormLayout>
+        <FormCard>
+          <OrcamentoForm />
+        </FormCard>
+        <ContactInfo />
+      </FormLayout>
       <Footer />
     </>
   );

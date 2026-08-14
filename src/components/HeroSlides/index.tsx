@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
 import styled from 'styled-components';
@@ -11,23 +12,35 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 import { SERVICOS_HERO_SLIDES } from '@/lib/content';
-import { useIsMobile, usePrefersReducedMotion } from '@/hooks/useMedia';
+import { SITE } from '@/lib/site';
+import { gsap } from '@/lib/gsap';
+import { usePrefersReducedMotion } from '@/hooks/useMedia';
+
+const GoldDust = dynamic(
+  () => import('@/components/GoldDust').then((m) => m.GoldDust),
+  {
+    ssr: false,
+    loading: () => null,
+  },
+);
 
 const DURATION = 4000;
-const DURATION_REDUCED = 7000;
 
 export function HeroSlides() {
   const reduced = usePrefersReducedMotion();
-  const isMobile = useIsMobile();
   const [counter, setCounter] = useState(1);
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   const autoplay = useMemo(
-    () => ({
-      delay: reduced ? DURATION_REDUCED : DURATION,
-      disableOnInteraction: false,
-      pauseOnMouseEnter: true,
-      waitForTransition: true,
-    }),
+    () =>
+      reduced
+        ? false
+        : {
+            delay: DURATION,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+            waitForTransition: true,
+          },
     [reduced],
   );
 
@@ -35,8 +48,53 @@ export function HeroSlides() {
     setCounter(sw.activeIndex + 1);
   }, []);
 
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section || reduced) return;
+
+    const ctx = gsap.context(() => {
+      gsap.to('.swiper-slide img', {
+        scale: 1.12,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1,
+        },
+      });
+
+      gsap.to('[data-hero-label]', {
+        y: -70,
+        autoAlpha: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom 25%',
+          scrub: 1,
+        },
+      });
+
+      gsap.to('.hero-dust', {
+        yPercent: -20,
+        autoAlpha: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1,
+        },
+      });
+    }, section);
+
+    return () => ctx.revert();
+  }, [reduced]);
+
   return (
-    <SlidesSection>
+    <SlidesSection ref={sectionRef}>
+      <h1 className="visually-hidden">{`${SITE.name} — ${SITE.slogan}`}</h1>
       <Banner>
         <Swiper
           modules={[A11y, Autoplay, Pagination]}
@@ -61,10 +119,10 @@ export function HeroSlides() {
                   sizes="100vw"
                   quality={82}
                   priority={slide.image === SERVICOS_HERO_SLIDES[0].image}
-                  style={{ objectFit: isMobile ? 'cover' : 'contain' }}
+                  style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
                 />
                 <Gradient />
-                <Label>
+                <Label data-hero-label>
                   <SlideTitle>{slide.title}</SlideTitle>
                   <SlideTagline>{slide.tagline}</SlideTagline>
                 </Label>
@@ -72,6 +130,8 @@ export function HeroSlides() {
             </SwiperSlide>
           ))}
         </Swiper>
+
+        <GoldDust className="hero-dust" />
 
         <Counter aria-hidden="true">
           {String(counter).padStart(2, '0')} / {String(SERVICOS_HERO_SLIDES.length).padStart(2, '0')}
@@ -83,22 +143,19 @@ export function HeroSlides() {
 
 const SlidesSection = styled.section`
   position: relative;
-  padding: 76px 0 0;
   background: #000000;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
 `;
 
 const Banner = styled.div`
   position: relative;
   width: 100%;
-  height: calc(100vh - 76px);
-  height: calc(100svh - 76px);
+  height: 100%;
   overflow: hidden;
   background: #000000;
-
-  @media (max-width: 768px) {
-    height: calc(100vh - 76px);
-    height: calc(100svh - 76px);
-  }
 
   .swiper {
     width: 100%;
@@ -225,4 +282,8 @@ const Counter = styled.span`
   letter-spacing: 0.2em;
   color: rgba(247, 243, 234, 0.9);
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+
+  @media (max-width: 1024px) {
+    top: 80px;
+  }
 `;

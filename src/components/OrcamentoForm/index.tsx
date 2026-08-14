@@ -12,11 +12,20 @@ const EVENT_TYPES = ['Casamento', '15 Anos', 'Formatura', 'Corporativo', 'Aniver
 const FIELD_LABELS: Record<string, string> = {
   nome: 'Nome completo',
   telefone: 'Telefone',
+  email: 'E-mail',
   tipo: 'Tipo de evento',
   data: 'Data do evento',
   convidados: 'Número de convidados',
   local: 'Local do evento',
 };
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+function todayISO(): string {
+  const d = new Date();
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
+}
 
 type BudgetData = {
   nome: string;
@@ -117,9 +126,15 @@ export function OrcamentoForm() {
           if (!form.nome.trim()) nextErrors.nome = true;
           if (!form.telefone.trim()) nextErrors.telefone = true;
           if (!form.tipo) nextErrors.tipo = true;
-          if (!form.data) nextErrors.data = true;
+          if (!form.data) {
+            nextErrors.data = true;
+          } else if (form.data < todayISO()) {
+            nextErrors.data = true;
+          }
           if (!form.convidados.trim() || !Number.isFinite(Number(form.convidados)) || Number(form.convidados) <= 0) nextErrors.convidados = true;
+          if (form.convidados.trim() && Number(form.convidados) > 5000) nextErrors.convidados = true;
           if (!form.local.trim()) nextErrors.local = true;
+          if (form.email.trim() && !EMAIL_RE.test(form.email.trim())) nextErrors.email = true;
 
           if (Object.keys(nextErrors).length > 0) {
             setErrors(nextErrors);
@@ -190,12 +205,14 @@ export function OrcamentoForm() {
               aria-invalid={!!errors.telefone}
             />
           </Field>
-          <Field label="E-mail">
+          <Field label="E-mail" error={errors.email ? 'Informe um e-mail válido.' : undefined}>
             <Input
               type="email"
               value={form.email}
               onChange={(e) => update('email', e.target.value)}
               placeholder="voce@email.com"
+              $invalid={errors.email}
+              aria-invalid={!!errors.email}
             />
           </Field>
         </Grid>
@@ -217,19 +234,21 @@ export function OrcamentoForm() {
               ))}
             </Select>
           </Field>
-          <Field label="Data do evento" required error={errors.data ? 'Informe a data do evento.' : undefined}>
+          <Field label="Data do evento" required error={errors.data ? 'Informe uma data válida (hoje ou futura).' : undefined}>
             <Input
               type="date"
+              min={todayISO()}
               value={form.data}
               onChange={(e) => update('data', e.target.value)}
               $invalid={errors.data}
               aria-invalid={!!errors.data}
             />
           </Field>
-          <Field label="Número de convidados" required error={errors.convidados ? 'Informe a quantidade de convidados.' : undefined}>
+          <Field label="Número de convidados" required error={errors.convidados ? 'Informe a quantidade de convidados (até 5.000).' : undefined}>
             <Input
               type="number"
               min={1}
+              max={5000}
               inputMode="numeric"
               value={form.convidados}
               onChange={(e) => update('convidados', e.target.value)}
@@ -271,6 +290,11 @@ export function OrcamentoForm() {
         </Field>
 
         <Submit type="submit">Enviar via WhatsApp</Submit>
+        <Assurance>
+          <span>Orçamento sem compromisso</span>
+          <span aria-hidden="true">·</span>
+          <span>Resposta em até 24h úteis</span>
+        </Assurance>
         <Privacy>Seus dados são usados apenas para atender seu pedido de orçamento.</Privacy>
       </Form>
     </>
@@ -420,6 +444,15 @@ const Submit = styled.button`
     transform: translateY(-3px);
     box-shadow: ${({ theme }) => theme.shadows.goldStrong};
   }
+`;
+
+const Assurance = styled.p`
+  margin: -6px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: ${({ theme }) => theme.colors.textoMuted};
 `;
 
 const Privacy = styled.p`

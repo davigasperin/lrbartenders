@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 
-import { Header } from '@/components/Header';
 import { PageHero } from '@/components/PageHero';
 import { Services } from '@/components/Services';
 import { EventTypes } from '@/components/EventTypes';
@@ -17,18 +16,15 @@ export const metadata: Metadata = {
 export default function ServicosPage() {
   return (
     <>
-      <Header />
-      <main>
-        <PageHero
-          eyebrow="Serviços"
-          title="Serviços que transformam eventos em experiências"
-          subtitle="Da coquetelaria premium à cascata de chocolate, oferecemos serviços versáteis e sofisticados para qualquer celebração."
-          background="/images/topo-site-02.jpg"
-        />
-        <Services />
-        <EventTypes />
-        <CTASection />
-      </main>
+      <PageHero
+        eyebrow="Serviços"
+        title="Serviços que transformam eventos em experiências"
+        subtitle="Da coquetelaria premium à cascata de chocolate, oferecemos serviços versáteis e sofisticados para qualquer celebração."
+        background="/images/topo-site-02.jpg"
+      />
+      <Services />
+      <EventTypes />
+      <CTASection />
       <Footer />
     </>
   );
