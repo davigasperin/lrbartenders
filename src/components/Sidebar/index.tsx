@@ -37,7 +37,7 @@ export function Sidebar() {
     <>
       <MobileBar>
         <MobileBrand href="/" aria-label={`${SITE.name} — home`}>
-          <Logo size={36} />
+          <Logo size={36} framed={false} />
         </MobileBrand>
         <HamburgerButton
           ref={toggleRef}
@@ -61,7 +61,7 @@ export function Sidebar() {
       >
         <SidebarHeader>
           <BrandLink href="/" aria-label={`${SITE.name} — home`} onClick={closeSidebar}>
-            <Logo />
+            <Logo framed={false} />
           </BrandLink>
         </SidebarHeader>
 

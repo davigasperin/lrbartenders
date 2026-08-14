@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ import 'swiper/css/pagination';
 import { SERVICOS_HERO_SLIDES } from '@/lib/content';
 import { SITE } from '@/lib/site';
 import { gsap } from '@/lib/gsap';
-import { usePrefersReducedMotion } from '@/hooks/useMedia';
+import { useIsMobile, usePrefersReducedMotion } from '@/hooks/useMedia';
 
 const GoldDust = dynamic(
   () => import('@/components/GoldDust').then((m) => m.GoldDust),
@@ -28,7 +28,7 @@ const DURATION = 4000;
 
 export function HeroSlides() {
   const reduced = usePrefersReducedMotion();
-  const [counter, setCounter] = useState(1);
+  const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement | null>(null);
 
   const autoplay = useMemo(
@@ -44,13 +44,9 @@ export function HeroSlides() {
     [reduced],
   );
 
-  const onSlideChange = useCallback((sw: { activeIndex: number }) => {
-    setCounter(sw.activeIndex + 1);
-  }, []);
-
   useLayoutEffect(() => {
     const section = sectionRef.current;
-    if (!section || reduced) return;
+    if (!section || reduced || isMobile) return;
 
     const ctx = gsap.context(() => {
       gsap.to('.swiper-slide img', {
@@ -90,7 +86,7 @@ export function HeroSlides() {
     }, section);
 
     return () => ctx.revert();
-  }, [reduced]);
+  }, [reduced, isMobile]);
 
   return (
     <SlidesSection ref={sectionRef}>
@@ -107,7 +103,6 @@ export function HeroSlides() {
           autoplay={autoplay}
           pagination={{ clickable: true }}
           a11y={{ paginationBulletMessage: 'Ir para o slide {{index}}' }}
-          onSlideChange={onSlideChange}
         >
           {SERVICOS_HERO_SLIDES.map((slide) => (
             <SwiperSlide key={slide.image}>
@@ -132,10 +127,6 @@ export function HeroSlides() {
         </Swiper>
 
         <GoldDust className="hero-dust" />
-
-        <Counter aria-hidden="true">
-          {String(counter).padStart(2, '0')} / {String(SERVICOS_HERO_SLIDES.length).padStart(2, '0')}
-        </Counter>
       </Banner>
     </SlidesSection>
   );
@@ -148,6 +139,11 @@ const SlidesSection = styled.section`
   height: 100vh;
   height: 100svh;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    height: auto;
+    padding-top: 64px;
+  }
 `;
 
 const Banner = styled.div`
@@ -156,6 +152,13 @@ const Banner = styled.div`
   height: 100%;
   overflow: hidden;
   background: #000000;
+
+  @media (max-width: 768px) {
+    height: auto;
+    aspect-ratio: 3 / 2;
+    min-height: 0;
+    background: ${({ theme }) => theme.colors.verdePetroleoEscuro};
+  }
 
   .swiper {
     width: 100%;
@@ -270,20 +273,5 @@ const SlideTagline = styled.span`
 
   @media (max-width: 768px) {
     font-size: clamp(0.85rem, 3.5vw, 1.05rem);
-  }
-`;
-
-const Counter = styled.span`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 3;
-  font-size: 0.8rem;
-  letter-spacing: 0.2em;
-  color: rgba(247, 243, 234, 0.9);
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
-
-  @media (max-width: 1024px) {
-    top: 80px;
   }
 `;

@@ -7,13 +7,14 @@ import { usePointerTilt } from '@/hooks/usePointerTilt';
 
 type LogoProps = {
   size?: number;
+  framed?: boolean;
 };
 
-export function Logo({ size = 52 }: LogoProps) {
+export function Logo({ size = 52, framed = true }: LogoProps) {
   const tiltRef = usePointerTilt<HTMLSpanElement>();
 
   return (
-    <Tile ref={tiltRef}>
+    <Tile ref={tiltRef} $framed={framed}>
       <Mark
         src="/images/logo.jpeg"
         alt=""
@@ -26,14 +27,18 @@ export function Logo({ size = 52 }: LogoProps) {
   );
 }
 
-const Tile = styled.span`
+const Tile = styled.span<{ $framed: boolean }>`
   display: inline-flex;
-  padding: 5px;
-  background: ${({ theme }) => theme.colors.verdePetroleoEscuro};
-  border: 1px solid rgba(201, 162, 39, 0.5);
-  border-radius: 12px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2),
-    0 8px 24px rgba(0, 0, 0, 0.45), 0 0 18px rgba(201, 162, 39, 0.12);
+  padding: ${({ $framed }) => ($framed ? '5px' : '0')};
+  background: ${({ $framed, theme }) =>
+    $framed ? theme.colors.verdePetroleoEscuro : 'transparent'};
+  border: ${({ $framed }) =>
+    $framed ? '1px solid rgba(201, 162, 39, 0.5)' : 'none'};
+  border-radius: ${({ $framed }) => ($framed ? '12px' : '0')};
+  box-shadow: ${({ $framed }) =>
+    $framed
+      ? '0 0 0 1px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 18px rgba(201, 162, 39, 0.12)'
+      : 'none'};
 `;
 
 const Mark = styled(Image)<{ $size: number }>`
