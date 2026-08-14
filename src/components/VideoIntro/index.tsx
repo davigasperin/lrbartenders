@@ -8,7 +8,7 @@ const VIDEO_ID = 'W_JsUinjwAY';
 const VIDEO_SRC = `https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${VIDEO_ID}&controls=0&modestbranding=1&rel=0&disablekb=1&fs=0&showinfo=0`;
 
 const INTRO_TEXT =
-  'Somos um serviço sofisticado e versátil associado a uma Coquetelaria Premium apresentada de forma clássica ou interativa. Com uma variada carta de drinks e os principais cocktails — internacionais, caipirinhas clássicas e gourmet, além de mixologia molecular — nosso objetivo é estimular os sentidos de cada convidado, oferecendo uma experiência sensorial inigualável.';
+  'Especializados em Alta Coquetelaria, proporcionamos uma experiência EXCLUSIVA com uma carta que combina drinks autorais e os clássicos mais sofisticados. Com um histórico de sucesso em eventos de diversos segmentos, somos reconhecidos como referência no serviço de bar. Entendemos que cada evento é único, por isso contamos com uma equipe de profissionais altamente qualificados para garantir um atendimento impecável e manter nosso elevado padrão de qualidade.';
 
 export function VideoIntro() {
   return (
