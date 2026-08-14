@@ -40,10 +40,16 @@ export function Footer() {
           <Heading>Redes sociais</Heading>
           <SocialRow>
             <Social href={SITE.instagramUrl} aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-              <InstagramIcon />
+              <InstagramIcon>
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+              </InstagramIcon>
             </Social>
             <Social href={SITE.facebookUrl} aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-              <FacebookIcon />
+              <FacebookIcon>
+                <path d="M14 8.5V7c0-.8.7-1.5 1.5-1.5H17V3h-2.5A3.5 3.5 0 0011 6.5v2H9v3h2v9h3v-9h2.5l.5-3H14z" />
+              </FacebookIcon>
             </Social>
           </SocialRow>
           <SmallText>{SITE.city}</SmallText>
@@ -153,19 +159,19 @@ const Social = styled(Link)`
   }
 `;
 
-const InstagramIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-    <rect x="3" y="3" width="18" height="18" rx="5" />
-    <circle cx="12" cy="12" r="4" />
-    <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
-  </svg>
-);
+const InstagramIcon = styled.svg.attrs({ viewBox: '0 0 24 24', 'aria-hidden': true })`
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+`;
 
-const FacebookIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M14 8.5V7c0-.8.7-1.5 1.5-1.5H17V3h-2.5A3.5 3.5 0 0011 6.5v2H9v3h2v9h3v-9h2.5l.5-3H14z" />
-  </svg>
-);
+const FacebookIcon = styled.svg.attrs({ viewBox: '0 0 24 24', 'aria-hidden': true })`
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+`;
 
 const SmallText = styled.p`
   color: ${({ theme }) => theme.colors.textoMuted};

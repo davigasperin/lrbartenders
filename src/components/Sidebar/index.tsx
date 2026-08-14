@@ -110,9 +110,9 @@ export function Sidebar() {
               rel="noopener noreferrer"
               aria-label="Facebook"
             >
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <FacebookIcon>
                 <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3V2z" />
-              </svg>
+              </FacebookIcon>
             </SocialLink>
             <SocialLink
               href="https://www.instagram.com/lrbartenders/"
@@ -120,11 +120,11 @@ export function Sidebar() {
               rel="noopener noreferrer"
               aria-label="Instagram"
             >
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                <rect x="2" y="2" width="20" height="20" rx="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0116 11.37z" />
-                <line x1="12" y1="17" x2="12" y2="17" />
-              </svg>
+              <InstagramIcon>
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+              </InstagramIcon>
             </SocialLink>
           </SocialLinks>
 
@@ -369,6 +369,20 @@ const SocialLink = styled(Link)`
     outline: 2px solid ${({ theme }) => theme.colors.douradoClaro};
     outline-offset: 2px;
   }
+`;
+
+const FacebookIcon = styled.svg.attrs({ viewBox: '0 0 24 24', 'aria-hidden': true })`
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+`;
+
+const InstagramIcon = styled.svg.attrs({ viewBox: '0 0 24 24', 'aria-hidden': true })`
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
 `;
 
 const SidebarCta = styled(Link)`
