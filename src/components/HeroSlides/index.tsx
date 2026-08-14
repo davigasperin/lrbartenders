@@ -36,12 +36,12 @@ export function HeroSlides() {
       reduced
         ? false
         : {
-            delay: DURATION,
+            delay: isMobile ? 6000 : DURATION,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
             waitForTransition: true,
           },
-    [reduced],
+    [reduced, isMobile],
   );
 
   useLayoutEffect(() => {
@@ -98,8 +98,7 @@ export function HeroSlides() {
           effect="slide"
           allowTouchMove
           grabCursor
-          speed={800}
-          rewind
+          speed={isMobile ? 500 : 800}
           autoplay={autoplay}
           pagination={{ clickable: true }}
           a11y={{ paginationBulletMessage: 'Ir para o slide {{index}}' }}
