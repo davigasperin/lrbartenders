@@ -44,9 +44,9 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     images: [
       {
-        url: '/images/logo.jpeg',
-        width: 1600,
-        height: 1557,
+        url: '/images/logo.png',
+        width: 506,
+        height: 493,
         alt: 'LR Bartenders',
       },
     ],

@@ -37,7 +37,7 @@ export function Sidebar() {
     <>
       <MobileBar>
         <MobileBrand href="/" aria-label={`${SITE.name} — home`}>
-          <Logo size={36} framed={false} />
+          <Logo size={50} framed={false} />
         </MobileBrand>
         <HamburgerButton
           ref={toggleRef}
@@ -61,7 +61,7 @@ export function Sidebar() {
       >
         <SidebarHeader>
           <BrandLink href="/" aria-label={`${SITE.name} — home`} onClick={closeSidebar}>
-            <Logo framed={false} />
+            <Logo size={88} framed={false} />
           </BrandLink>
         </SidebarHeader>
 
@@ -148,7 +148,7 @@ const MobileBar = styled.div`
   z-index: 99;
   padding: 0 20px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   border-bottom: 1px solid rgba(201, 162, 39, 0.2);
 
   @media (max-width: 1024px) {
@@ -162,6 +162,8 @@ const MobileBrand = styled(Link)`
 `;
 
 const HamburgerButton = styled.button`
+  position: absolute;
+  right: 20px;
   width: 40px;
   height: 40px;
   background: transparent;

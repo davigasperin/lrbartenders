@@ -16,10 +16,10 @@ export function Logo({ size = 52, framed = true }: LogoProps) {
   return (
     <Tile ref={tiltRef} $framed={framed}>
       <Mark
-        src="/images/logo.jpeg"
+        src="/images/logo.png"
         alt=""
-        width={1600}
-        height={1557}
+        width={506}
+        height={493}
         priority
         $size={size}
       />
